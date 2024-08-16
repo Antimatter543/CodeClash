@@ -1,8 +1,8 @@
 import json
 
 def process_file(file_path):
-    # Read the file content
-    with open(file_path, 'r') as file:
+    # Read the file content with utf-8 encoding
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     # Split based on the delimiter '~'
@@ -66,12 +66,12 @@ def process_file(file_path):
     return problems
 
 def save_to_json(problems, output_path):
-    with open(output_path, 'w') as json_file:
+    with open(output_path, 'w', encoding='utf-8') as json_file:
         json.dump(problems, json_file, indent=4)
 
 # Example usage:
-file_path = 'scraper/test.txt'
-output_path = 'scraper/test_out.json'
+file_path = 'scraper/leetcode.txt'
+output_path = 'scraper/questions.json'
 
 problems = process_file(file_path)
 save_to_json(problems, output_path)
