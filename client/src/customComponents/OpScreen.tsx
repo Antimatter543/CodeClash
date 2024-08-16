@@ -1,8 +1,18 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import useShortCut from "../utils/useShortCut"; // Adjust the path as necessary
 
 export default function OpScreen() {
     const [open, setOpen] = useState(false);
+    const shortcutPressed = useShortCut("k", "metaKey");
+
+    useEffect(() => {
+        if (shortcutPressed) {
+            setOpen(true);
+        } else {
+            setOpen(false);
+        }
+    }, [shortcutPressed]);
 
     return (
         <div className="text-white font-inter">
