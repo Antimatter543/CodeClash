@@ -4,6 +4,7 @@ import { io, Socket } from 'socket.io-client';
 interface SocketContextType {
   socket: Socket | null;
   leaveRoom: () => void;
+  setUsername: (username: string) => void;
   roomCode: string;
   username: string;
 }
@@ -17,8 +18,8 @@ interface SocketProviderProps {
 const serverURL = 'http://localhost:3000';
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-  const [roomCode, setRoomCode] = useState<string>('');
-  const [username] = useState<string>('player' + Math.floor(Math.random() * 10000).toString());
+  const [roomCode, setRoomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
+  const [username, setUsername] = useState<string>(() => localStorage.getItem('username') || '');
   const [socket, setSocket] = useState<Socket | null>(null);
   const socketRef = useRef<Socket | null>(null);
 
@@ -32,12 +33,13 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     });
 
     newSocket.on('joinRoom', (success, code) => {
-        if (success) {
-            console.log("Joined room", code);
-            setRoomCode(code);
-        } else {
-            console.log("Could not find room. Check the code or create a room");
-        }
+      if (success) {
+        console.log("Joined room", code);
+        setRoomCode(code);
+        localStorage.setItem('roomCode', code);
+      } else {
+        console.log("Could not find room. Check the code or create a room");
+      }
     });
 
     // Cleanup function to disconnect the socket on component unmount
@@ -51,10 +53,17 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (username) {
+      localStorage.setItem('username', username);
+    }
+  }, [username]);
+
   const leaveRoom = () => {
     if (roomCode) {
       socketRef.current?.emit('leaveRoom', roomCode);
       setRoomCode('');
+      localStorage.removeItem('roomCode');
       console.log('Left room.');
     } else {
       console.log("Not currently in a room.");
@@ -62,7 +71,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   };
 
   return (
-    <SocketContext.Provider value={{ socket, leaveRoom, roomCode, username }}>
+    <SocketContext.Provider value={{ socket, leaveRoom, setUsername, roomCode, username }}>
       {children}
     </SocketContext.Provider>
   );

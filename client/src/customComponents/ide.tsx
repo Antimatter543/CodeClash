@@ -23,6 +23,8 @@ export default function IDE({ playerType }: IDEProps) {
   const [sender, setSender] = useState("");
   const [receiver, setReceiver] = useState("");
 
+  console.log(socketContext)
+
   useEffect(() => {
     if (playerType === PlayerType.self) {
       setSender("sendOwnEdit");

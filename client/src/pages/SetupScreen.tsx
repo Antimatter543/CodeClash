@@ -17,49 +17,59 @@ import { useState } from "react";
 
 export default function SetupScreen() {
     const socketContext = useSocket();
-    const [username, setUsername] = useState('');
+    const [inputuser, setInputUsername] = useState('');
     const [roomCode, setRoomCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const socket = socketContext.socket;
-
+    const setUsername = socketContext.setUsername;
 
     const handleCreateRoom = () => {
         if (!socket) {
-            setErrorMessage("Error Connecting to socket")
-            return
-        } 
-        if (!username) {
+            setErrorMessage("Error Connecting to socket");
+            return;
+        }
+        if (!inputuser) {
             setErrorMessage('User name is required');
             return;
         }
-
-        socket.emit('requestCreateRoom', username);
+        
+        setUsername(inputuser);
+        socket.emit('requestCreateRoom', inputuser);
+        
+        // Store username in local storage
+        localStorage.setItem('username', inputuser);
         
         setErrorMessage('');
     }
 
     const handleJoinRoom = () => {
         if (!socket) {
-            setErrorMessage("Error Connecting to socket")
-            return
-        } 
-        if (!username || !roomCode) {
-            setErrorMessage('Both username and room code are required.');
-            return
+            setErrorMessage("Error Connecting to socket");
+            return;
         }
-        if (roomCode.length != 4) {
+        if (!inputuser || !roomCode) {
+            setErrorMessage('Both username and room code are required.');
+            return;
+        }
+        if (roomCode.length !== 4) {
             setErrorMessage("Invalid room code");
-            return
+            return;
         } else if (roomCode === socketContext.roomCode) {
             setErrorMessage("Already in room");
-            return
+            return;
         }
         
-        socket.emit('requestJoinRoom', username, roomCode);
+        setUsername(inputuser);
+        socket.emit('requestJoinRoom', inputuser, roomCode);
+        
+        // Store username and room code in local storage
+        localStorage.setItem('username', inputuser);
+        localStorage.setItem('roomCode', roomCode);
+        
         setErrorMessage('');
     };
 
-    console.log(socketContext)
+    console.log(socketContext);
 
     return (
         <div className="font-inter w-full h-full flex flex-col justify-center items-center gap-[4rem]">
@@ -87,7 +97,7 @@ export default function SetupScreen() {
                                 id="username"
                                 defaultValue="leetcoder123"
                                 className="col-span-3"
-                                onChange={(e) => setUsername(e.target.value)}
+                                onChange={(e) => setInputUsername(e.target.value)}
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
