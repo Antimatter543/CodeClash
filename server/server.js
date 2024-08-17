@@ -38,13 +38,13 @@ io.on('connect', socket => {
     }
   }
 
-  socket.on('requestCreateRoom', () => {
+  socket.on('requestCreateRoom', (username) => {
     let roomCode = generateRoomCode(4);
     rooms[roomCode] = {
       player1: {
-        connected: false,
-        name: "", 
-        id: "",
+        connected: true,
+        name: username, 
+        id: socket.id,
       }, 
       player2: {
         connected: false,
