@@ -22,3 +22,4 @@ response = requests.post(API_URL, json=data)
 # Print the response from the server
 print("Status Code:", response.status_code)
 print("Response JSON:", response.json())
+ 
