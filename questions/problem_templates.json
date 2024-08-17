@@ -1,0 +1,23 @@
+{
+    "1048": {
+      "Python": "class Solution:\n    def longestStrChain(self, words):",
+      "Java": "public static int longestStrChain(String[] words) {"
+    },
+    "119": {
+      "Python": "from typing import List\n\nclass Solution:\n    def getRow(self, rowIndex: int) -> List[int]:",
+      "Java": "public static List<Integer> getRow(int rowIndex) {"
+    },
+    "1207": {
+      "Python": "class Solution:\n    def uniqueOccurrences(self, arr):",
+      "Java": "public static boolean uniqueOccurrences(int[] arr) {"
+    },
+    "287": {
+      "Python": "from typing import List\n\nclass Solution:\n    def findDuplicate(self, nums: List[int]) -> int:",
+      "Java": "public static int findDuplicate(List<Integer> nums) {"
+    },
+    "557": {
+      "Python": "class Solution:\n    def reverseWords(self, s):",
+      "Java": "public static String reverseWords(String s) {"
+    }
+  }
+  
