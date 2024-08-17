@@ -28,16 +28,16 @@ export default function SetupScreen() {
         const newSocket = io(serverURL);
         setSocket(newSocket);
 
-        newSocket.on('confirmJoin', (success: boolean) => {
+        newSocket.on('confirmJoin', (success: boolean, roomCode: string, username: string) => {
             if (success) {
-                localStorage.setItem('roomCode', inputRoomCode);
-                localStorage.setItem('username', inputuser);
+                localStorage.setItem('roomCode', roomCode);
+                localStorage.setItem('username', username);
                 setCombat(true); // Set combat to true on successful join
             }
         });
 
-        newSocket.on('confirmCreateRoom', (roomCode: string, username: string) => {
-            if (roomCode) {
+        newSocket.on('confirmCreateRoom', (success: boolean, roomCode: string, username: string) => {
+            if (success) {
                 localStorage.setItem('roomCode', roomCode);
                 localStorage.setItem('username', username);
                 setCombat(true); // Set combat to true on successful room creation
