@@ -5,7 +5,6 @@ import { X } from "lucide-react";
 import IDE from "./ide";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Socket } from 'socket.io-client';
-
 interface OpScreenProps {
     socket: Socket | null;
 }
@@ -46,7 +45,7 @@ export default function OpScreen({ socket }: OpScreenProps) {
                 }}
                 layout
             >
-                <IDE playerType="opponent" socket={socket} />
+                <IDE playerType="opponent" socket={socket}/>
                 {(!open && opponent) && (
                     <div className="absolute inset-0 bg-black/20 flex justify-center items-center z-10 backdrop-blur-sm">
                         <Avatar className="size-[3.5rem]">

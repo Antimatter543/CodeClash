@@ -17,8 +17,9 @@ interface IDEProps {
 
 export default function IDE({ playerType, socket }: IDEProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const roomCode = useState<string>(() => localStorage.getItem('roomCode') || '');
-  const username = useState<string>(() => localStorage.getItem('username') || '');
+  const [roomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
+  const [username] = useState<string>(() => localStorage.getItem('username') || '');
+
   const sender = playerType === PlayerType.self ? "sendOwnEdit" : "sendOpponentEdit";
   const receiver = playerType === PlayerType.self ? "receiveOwnCodeEdit" : "receiveOpponentCodeEdit";
 
@@ -30,9 +31,8 @@ export default function IDE({ playerType, socket }: IDEProps) {
       editor: editor,
       onInsert(index, text) {
         if (socket && roomCode && username) {
-            socket.emit(sender, roomCode, username, "Insert", index, 0, text);
+          socket.emit(sender, roomCode, username, "Insert", index, 0, text);
         }
-        
       },
       onReplace(index, length, text) {
         if (socket && roomCode && username) {
@@ -48,7 +48,7 @@ export default function IDE({ playerType, socket }: IDEProps) {
 
     // Listen for incoming edits
     if (socket && roomCode && username) {
-      socket.on(receiver, (editType, index, length, text) => {
+      const handleEdit = (editType: string, index: number, length: number, text: string) => {
         switch (editType) {
           case "Insert":
             contentManager.insert(index, text);
@@ -60,20 +60,29 @@ export default function IDE({ playerType, socket }: IDEProps) {
             contentManager.delete(index, length);
             break;
         }
-      });
+      };
+
+      socket.on(receiver, handleEdit);
+
+      // Cleanup event listener on component unmount
+      return () => {
+        socket.off(receiver, handleEdit);
+      };
     }
   };
 
   return (
-    <Editor
+    <div className='relative'>
+      <Editor
         height="90vh"
-        defaultLanguage="javascript"
-        defaultValue="// some comment"
+        language="python"
+        defaultValue="class Solution"
         onMount={handleEditorDidMount}
         options={{
-            readOnly: false,
-            minimap: { enabled: false },
+          readOnly: false,
+          minimap: { enabled: false },
         }}
-    />
+      />
+    </div>
   );
 }
