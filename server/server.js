@@ -174,4 +174,6 @@ io.on('connect', socket => {
   socket.on('sendPing', (roomCode, username, componentName) => {
     console.log("ping received from", roomCode, username, componentName);
   });
+
+  // start timer
 });

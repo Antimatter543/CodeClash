@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { io, Socket } from 'socket.io-client';
 import CombatScreen from "./combatScreen";
+import Navbar from "@/customComponents/Navbar";
 
 export default function SetupScreen() {
     const [inputuser, setInputUsername] = useState('');
@@ -23,6 +24,7 @@ export default function SetupScreen() {
     const [combat, setCombat] = useState(false); // State to control CombatScreen visibility
     const serverURL = 'http://localhost:3000';
     const [socket, setSocket] = useState<Socket | null>(null);
+    const [formattedTime, setFormattedTime] = useState('00:00');
 
     useEffect(() => {
         const newSocket = io(serverURL);
@@ -32,7 +34,8 @@ export default function SetupScreen() {
             if (success) {
                 localStorage.setItem('roomCode', roomCode);
                 localStorage.setItem('username', username);
-                setReady(true); // Set combat to true on successful join
+                setCombat(true)
+                setReady(true);
             }
         });
 
@@ -45,6 +48,7 @@ export default function SetupScreen() {
         });
 
         newSocket.on('playersJoinedRoom', (success: boolean) => {
+            console.log(success)
             setCombat(success)
         })
 
@@ -52,6 +56,16 @@ export default function SetupScreen() {
             newSocket.disconnect();
         };
     }, []);
+
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    const handleTimeUpdate = (time: number) => {
+        setFormattedTime(formatTime(time));
+    };
 
     const handleCreateRoom = () => {
         if (!socket) {
@@ -87,6 +101,7 @@ export default function SetupScreen() {
 
     return (
         <div className="h-full">
+            <Navbar combat={combat} time={formattedTime}/>
             {!ready &&
                 <div className="font-inter w-full h-full flex flex-col justify-center items-center gap-[4rem]">
                     <section className="text-center">
@@ -140,7 +155,7 @@ export default function SetupScreen() {
                     </Dialog>
                 </div>
             }
-            {ready && <CombatScreen combat={combat} socket={socket}/>} {/* Render CombatScreen only if combat is true */}
+            {ready && <CombatScreen combat={combat} socket={socket} startTimer={handleTimeUpdate}/>} {/* Render CombatScreen only if combat is true */}
         </div>
     );
 }
