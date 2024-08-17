@@ -18,7 +18,8 @@
             "",
             "",
             "Follow up: Could you find an algorithm that runs in O(m + n) time?"
-        ]
+        ],
+        "timeLimit": 480
     },
     {
         "title": "119. Pascal's Triangle II",
@@ -35,7 +36,8 @@
             "",
             "",
             "Follow up: Could you optimize your algorithm to use only O(rowIndex) extra space?"
-        ]
+        ], 
+        "timeLimit": 120
     },
     {
         "title": "287. Find the Duplicate Number",
@@ -58,7 +60,8 @@
             "",
             "How can we prove that at least one duplicate number must exist in nums?",
             "Can you solve the problem in linear runtime complexity?"
-        ]
+        ], 
+        "timeLimit": 300
     },
     {
         "title": "557. Reverse Words in a String III",
@@ -76,7 +79,8 @@
             "s does not contain any leading or trailing spaces.",
             "There is at least one word in s.",
             "All the words in s are separated by a single space."
-        ]
+        ],
+        "timeLimit": 120
     },
     {
         "title": "1048. Longest String Chain",
@@ -93,6 +97,7 @@
             "1 <= words.length <= 1000",
             "1 <= words[i].length <= 16",
             "words[i] only consists of lowercase English letters."
-        ]
+        ], 
+        "timeLimit": 300
     }
 ]
