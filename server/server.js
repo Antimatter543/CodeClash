@@ -108,7 +108,7 @@ io.on('connect', socket => {
   // player edits own code
   socket.on('sendOwnEdit', (roomCode, username, editType, index, length, text) => {
     opponentSocket(roomCode, username).emit("receiveOpponentCodeEdit", editType, index, length, text);
-    console.log(playeredited)
+    console.log("playeredited")
   });
 
   // player edits opponents code

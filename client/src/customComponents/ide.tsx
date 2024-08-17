@@ -42,22 +42,23 @@ export default function IDE({ playerType }: IDEProps) {
     const contentManager = new MonacoCollabExt.EditorContentManager({
       editor: editor,
       onInsert(index, text) {
-        if (socket && roomCode && username) {
+        if ((socket != null) && (roomCode != null) && (username != null)) {
           socket.emit(sender, roomCode, username, "Insert", index, 0, text);
+          console.log("Insert", index, text);
         }
-        console.log("Insert", index, text);
+        
       },
       onReplace(index, length, text) {
         if (socket && roomCode && username) {
           socket.emit(sender, roomCode, username, "Replace", index, length, text);
+          console.log("Replace", index, length, text);
         }
-        console.log("Replace", index, length, text);
       },
       onDelete(index, length) {
         if (socket && roomCode && username) {
           socket.emit(sender, roomCode, username, "Delete", index, length, "");
+          console.log("Delete", index, length);
         }
-        console.log("Delete", index, length);
       },
     });
 

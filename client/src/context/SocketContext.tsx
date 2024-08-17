@@ -42,8 +42,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       }
     });
     
-    newSocket.emit('requestJoinRoom', username, roomCode);
-
     // Cleanup function to disconnect the socket on component unmount
     return () => {
       if (socketRef.current) {

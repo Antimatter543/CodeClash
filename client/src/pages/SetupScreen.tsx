@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import Github from '../assets/svg/svg';
 import { useSocket } from "@/context/SocketContext";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SetupScreen() {
     const socketContext = useSocket();
@@ -22,6 +23,7 @@ export default function SetupScreen() {
     const [errorMessage, setErrorMessage] = useState('');
     const socket = socketContext.socket;
     const setUsername = socketContext.setUsername;
+    const navigate = useNavigate()
 
     const handleCreateRoom = () => {
         if (!socket) {
@@ -38,7 +40,8 @@ export default function SetupScreen() {
         
         // Store username in local storage
         localStorage.setItem('username', inputuser);
-        
+        navigate('/battle')
+
         setErrorMessage('');
     }
 
@@ -65,6 +68,8 @@ export default function SetupScreen() {
         // Store username and room code in local storage
         localStorage.setItem('username', inputuser);
         localStorage.setItem('roomCode', roomCode);
+
+        navigate('/battle')
         
         setErrorMessage('');
     };
