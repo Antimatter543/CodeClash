@@ -27,6 +27,8 @@ dictthing = {("Python", "listint"): "Problems().lintconverter", ("Python, listst
              ("C", "lintconverter"): "CProblems.lintconverter",("C", "liststr"): "CProblems.lstrconverter",
              ("C", "int"): "CProblems.intconverter",("C", "str"): "CProblems.strconverter",}
 
+dictquestion = {"76": "minWindow", "119": "getRow", "287": "findDuplicate", "557": "reverseWords",
+                "1048": "longestStrChain", "1207": "uniqueOccurrences"}
 
 ## Given by frontend peeps
 language_used = "Python"
@@ -51,6 +53,8 @@ class Solution:
 # Specify the path to your file
 file_path = './questions/readers/python_readers.py'
 
+# hard coding the type of question
+question = "119"
 with open(file_path, 'r') as file:
     file_contents = file.read()
 # print(file_contents)
@@ -66,10 +70,10 @@ parsed_input = {dictthing[(language_used, "int")]}(inputs)
 
 
 sol = Solution()
-print(sol.getRow(parsed_input))
+print(sol.{dictquestion[question]}(parsed_input))
 """
 
-print(judge_code)
+# print(judge_code)
 
 input_data = "0"
 expected_output = "[1]"
