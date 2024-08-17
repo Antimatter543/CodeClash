@@ -182,9 +182,15 @@ io.on('connect', socket => {
     }
   });  
 
-  socket.on('requestProblem', (currentProblemNumber) => { // send 0 as current problem number to start 
+  socket.on('requestProblem', (currentProblemNumber, roomCode) => { // send 0 as current problem number to start 
     const problem = problems[currentProblemNumber];
-    socket.emit('nextProblem', problem); // problem object formatted
+    const room = rooms[roomCode[0]]
+    if (currentProblemNumber === 0) {
+      socket.to(room.player1.id).emit('startGame', problem)
+      socket.to(room.player2.id).emit('startGame', problem)
+    }
+    
+    socket.('nextProblem', problem); // problem object formatted
   });
 
 

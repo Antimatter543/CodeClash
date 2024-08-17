@@ -24,12 +24,18 @@ export default function CombatScreen({ socket, combat, startTimer }: CombatScree
   const roomCode = useState<string>(() => localStorage.getItem('roomCode') || '');
   const handleStartFight = () => {
     if (combat) {
-      setFightStarted(true);
-      socket?.emit('requestProblem', 0);
+      socket?.emit('requestProblem', 0, roomCode);
     }
   };
 
   useEffect(() => {
+    socket?.on('startGame', (problem: any) => {
+      console.log(problem)
+      setProblem(problem)
+      setFightStarted(true);
+      setTime(problem.timeLimit);
+    });
+
     socket?.on('nextProblem', (problem: any) => {
       console.log(problem)
       setProblem(problem)
