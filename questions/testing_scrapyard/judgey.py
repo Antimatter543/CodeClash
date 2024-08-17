@@ -4,7 +4,8 @@ import requests
 JUDGE0_API_URL = "http://3.26.186.241:2358/submissions/?base64_encoded=false&wait=true"
 
 # LANGUAGE_ID = 71  # Python 3.8.1
-LANGUAGE_ID = 62  # Java
+# LANGUAGE_ID = 62  # Java
+LANGUAGE_ID = 75 # C
 
 def submit_code_to_judge0(source_code: str, input_data: str) -> dict:
     """Submit code to Judge0 with input and return the response."""
@@ -28,116 +29,38 @@ dictthing = {("Python", "listint"): "Problems().lintconverter", ("Python", "list
              ("C", "lintconverter"): "CProblems.lintconverter",("C", "liststr"): "CProblems.lstrconverter",
              ("C", "int"): "CProblems.intconverter",("C", "str"): "CProblems.strconverter",}
 
-dictquestion = {"119": ("getRow", "int", "int"), "287": ("findDuplicate", "listint", "int[]"), "557": ("reverseWords", "str", "String"),
-                "1048": ("longestStrChain", "liststr", "String[]"), "1207": ("uniqueOccurrences", "listint", "int[]")}
+dictquestion = {"119": ("getRow", "int", "int", "int"), "287": ("findDuplicate", "listint", "int[]", "int*"), "557": ("reverseWords", "str", "String", "char*"),
+                "1048": ("longestStrChain", "liststr", "String[]", "char**"), "1207": ("uniqueOccurrences", "listint", "int[]", "int*")}
 
 ## Given by frontend peeps
 # language_used = "Python"
-language_used = "Java"
+language_used = "C"
 # All java code needs to be static
-# user_code = """
-# public static List<Integer> getRow(int rowIndex) {
-#     Integer[] ans = new Integer[rowIndex + 1];
-#     Arrays.fill(ans, 1);
-
-#     for (int i = 2; i < rowIndex + 1; ++i)
-#         for (int j = 1; j < i; ++j)
-#             ans[i - j] += ans[i - j - 1];
-
-#     return Arrays.asList(ans);
-# }
-# """
-# user_code = """
-# public static int findDuplicate(int[] nums) {
-#     int slow = nums[nums[0]];
-#     int fast = nums[nums[nums[0]]];
-
-#     while (slow != fast) {
-#       slow = nums[slow];
-#       fast = nums[nums[fast]];
-#     }
-
-#     slow = nums[0];
-
-#     while (slow != fast) {
-#       slow = nums[slow];
-#       fast = nums[fast];
-#     }
-
-#     return slow;
-# }
-# """
-# user_code = """
-# public static String reverseWords(String s) {
-#     if (s == null || s.length() <= 1) {
-#         return s;
-#     }
-#     char[] str = s.toCharArray();
-#     int start = 0;
-#     for (int i = 0; i < str.length; i++) {
-#         if (str[i] == ' ') {
-#             reverse(str, start, i - 1);
-#             start = i + 1;
-#         } else if (i == str.length - 1) {
-#             reverse(str, start, i);
-#         }
-#     }//end for
-    
-#     return String.valueOf(str);
-# }
-
-# public static void reverse(char[] s, int start, int end) {
-#     while (start < end) {
-#         char temp = s[start];
-#         s[start] = s[end];
-#         s[end] = temp;
-#         start++;
-#         end--;
-#     }
-# }
-# """
-# user_code = """
-# public static int longestStrChain(String[] words) {
-#     int rst = 0;
-#     Arrays.sort(words, Comparator.comparing(a -> a.length()));
-#     HashMap<String, Integer> wordChainMap = new HashMap();
-#     for (String word : words) {
-#         if (wordChainMap.containsKey(word)) continue;
-#         wordChainMap.put(word, 1);
-#         for (int i = 0; i < word.length(); i++) {
-#             StringBuilder sb = new StringBuilder(word);
-#             sb.deleteCharAt(i);
-#             String lastWord = sb.toString();
-#             if (wordChainMap.containsKey(lastWord) && wordChainMap.get(lastWord) + 1 > wordChainMap.get(word)) {
-#                 wordChainMap.put(word, wordChainMap.get(lastWord) + 1);
-#             }
-#         }
-#         if (wordChainMap.get(word) > rst) rst = wordChainMap.get(word);
-#     }
-#     return rst;
-# }   
-# """
 user_code = """
-public static boolean uniqueOccurrences(int[] arr) {
-    Map<Integer, Integer> count = new HashMap<>();
-    Set<Integer> occurrences = new HashSet<>();
+int* getRow(int rowIndex, int* returnSize) {
+    *returnSize = rowIndex + 1;
+    int *triangle = malloc(*returnSize * sizeof(int));
 
-    for (final int a : arr)
-      count.merge(a, 1, Integer::sum);
+    for (int i = 0; i < *returnSize; i++) {
+        int last = 1;
+        for (int ii = 1; ii < i; ii++) {
+            int tmp = triangle[ii];
+            triangle[ii] += last;
+            last = tmp;
+        }
+        triangle[i] = 1;
+    }
 
-    for (final int value : count.values())
-      if (!occurrences.add(value))
-        return false;
-
-    return true;
+    return triangle;
 }
 """
 # Front End gives question number
-question = "1207"
+question = "119"
 question_type = dictquestion[question][1]
 # Specify the path to your file
 # file_path = './questions/readers/python_readers.py'
-file_path = './questions/readers/JavaProblems.java'
+# file_path = './questions/readers/JavaProblems.java'
+file_path = './questions/readers/CProblems.c'
 
 
 
@@ -173,6 +96,47 @@ elif language_used == "Java":
             {dictquestion[question][2]} parsed_input = {dictthing[(language_used, question_type)]}(inputs);
             System.out.println({dictquestion[question][0]}(parsed_input));
         }}
+    }}
+    """
+elif language_used == "C":
+    judge_code = f"""
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+
+    // Function declarations
+    {user_code}
+    {file_contents}
+
+    // Function prototypes
+    int* lintconverter(const char* stdin, int* size);
+    char** lstrconverter(const char* stdin, int* size);
+    int intconverter(const char* stdin);
+    char* strconverter(const char* stdin);
+
+    int main() {{
+        // Read input
+        char input_buffer[1024];
+        fgets(input_buffer, sizeof(input_buffer), stdin);
+
+        // Assuming the function to call is getRow and it requires rowIndex and returnSize
+        int returnSize;
+        int rowIndex = intconverter(input_buffer);  // Convert input to integer
+
+        // Call the function and get the result
+        int* result = getRow(rowIndex, &returnSize);
+
+        // Print the result
+        printf("[");
+        for (int i = 0; (i - 1) < returnSize; i++) {{
+            printf("%d, ", result[i]);
+        }}
+        printf("]\\n");
+
+        // Free allocated memory
+        free(result);
+
+        return 0;
     }}
     """
 
