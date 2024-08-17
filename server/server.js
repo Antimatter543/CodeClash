@@ -127,9 +127,9 @@ io.on('connect', socket => {
       socket.emit('receiveGamePoints', points, powerupPower);
       opponentSocket().emit('receiveScoreboard', room.scoreBoard);
     }
-  }
+  });
 
-  //
+  // test ahfkdahghlfle
   
 
   // test sockets of each element
