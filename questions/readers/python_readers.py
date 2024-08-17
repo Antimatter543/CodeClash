@@ -27,4 +27,13 @@ class Problems:
     
 
     def parse_probem_287(stdin: str) -> List[int]:
-    
+        
+    def parse_probem_1048(stdin: str) -> List[str]:
+        # Each line of txt is string with list of words, convert to list[string]
+        words = list(map(str, stdin.strip().split(',')))
+        return words,
+
+    def parse_probem_1207(stdin: str) -> List[int]:
+        # Each line of txt is string with list of int, convert to list[int]
+        nums = list(map(int, stdin.strip().split(',')))
+        return nums,
