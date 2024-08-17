@@ -22,8 +22,11 @@ dictthing = {("Python", "listint"): "Problems.lintconverter", ("Python, liststr"
              ("Python", "int"): "Problems.intconverter", ("Python, str"): "Problems.strconverter",
              ("Java", "strconverter"): "JavaProblems.strconverter"}
 
+with open(sd. )as gka
+reader  = f/ile.read()
+
 if python:
-    judge= """{string}
+    judge= """{string THEIR CODE }
 
     {readers file}
 

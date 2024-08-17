@@ -16,6 +16,8 @@ def submit_code_to_judge0(source_code: str, input_data: str) -> dict:
     response.raise_for_status()
     return response.json()
 
+
+their_source_code = "print(Hello)"
 # Simple function definition
 judge0_code = """
 {their_source_code}
@@ -33,7 +35,7 @@ input_data = "2"
 expected_output = "4"
 
 # Submit the code and input to Judge0
-result = submit_code_to_judge0(source_code, input_data)
+result = submit_code_to_judge0(judge0_code, input_data)
 print(f"Raw result {result}")
 # Print the results
 print("Output:", result.get('stdout', '').strip())
