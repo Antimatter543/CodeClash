@@ -4,7 +4,7 @@ from typing import List, Tuple
 import json
 
 # Constants
-JUDGE0_API_URL = "http://3.24.180.98/2358/submissions/"
+JUDGE0_API_URL = "http://13.211.75.177:2358/submissions/"
 LANGUAGE_ID = 71  # Python 3.8.1
 TESTCASES_DIR = "./testcases/problem1/"
 WAIT_FOR_RESULT = True

@@ -1,7 +1,7 @@
 import requests
 
 # Judge0 API URL
-JUDGE0_API_URL = "http://3.24.180.98:2358/submissions/?base64_encoded=false&wait=true"
+JUDGE0_API_URL = "http://13.211.75.177:2358/submissions/?base64_encoded=false&wait=true"
 LANGUAGE_ID = 71  # Python 3.8.1
 
 def submit_code_to_judge0(source_code: str, input_data: str) -> dict:
@@ -17,9 +17,13 @@ def submit_code_to_judge0(source_code: str, input_data: str) -> dict:
     return response.json()
 
 
-their_source_code = "print(Hello)"
+their_source_code = """
+def f(x):
+    return 2 * x
+
+"""
 # Simple function definition
-judge0_code = """
+judge0_code = f"""
 {their_source_code}
 
 # Read input from stdin
@@ -27,6 +31,7 @@ x = int(input().strip())
 # Print the result of f(x)
 print(f(x))
 """
+print(judge0_code)
 
 # Input value for the function
 input_data = "2"
