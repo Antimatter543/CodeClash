@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import Editor, { OnMount } from '@monaco-editor/react';
 import * as MonacoCollabExt from '@convergencelabs/monaco-collab-ext';
 import * as monaco from 'monaco-editor';
+import { Socket } from 'socket.io-client';
 
 // Enum for player types
 const PlayerType = {
@@ -11,12 +12,13 @@ const PlayerType = {
 
 interface IDEProps {
   playerType: keyof typeof PlayerType;
+  socket: Socket | null;
 }
 
-export default function IDE({ playerType }: IDEProps) {
+export default function IDE({ playerType, socket }: IDEProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const [roomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
-  const [username] = useState<string>(() => localStorage.getItem('username') || '');
+  const roomCode = useState<string>(() => localStorage.getItem('roomCode') || '');
+  const username = useState<string>(() => localStorage.getItem('username') || '');
   const sender = playerType === PlayerType.self ? "sendOwnEdit" : "sendOpponentEdit";
   const receiver = playerType === PlayerType.self ? "receiveOwnCodeEdit" : "receiveOpponentCodeEdit";
 
@@ -28,7 +30,8 @@ export default function IDE({ playerType }: IDEProps) {
       editor: editor,
       onInsert(index, text) {
         if (roomCode && username) {
-            socket.emit(sender, roomCode, username, "Insert", index, 0, text);
+            console.log(sender, socket?.connected)
+            socket?.emit(sender, roomCode, username, "Insert", index, 0, text);
         }
         
       },

@@ -1,36 +1,23 @@
 import IDE from '@/customComponents/ide';
 import ProblemBar from '@/customComponents/ProblemBar';
-
+import { Socket } from 'socket.io-client';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable"
+} from "@/components/ui/resizable";
 import Console from '@/customComponents/Console';
 import OpScreen from '@/customComponents/OpScreen';
-import { useEffect } from 'react';
 
-export default function CombatScreen() {
-  useEffect(() => {
-    socket?.emit('requestReconnection', roomCode, username);
+interface CombatScreenProp {
+  socket: Socket | null;
+}
 
-    socket?.on('joinRoom', (success, roomCode) => {
-      if (success) {
-        console.log("Joined room", roomCode);
-      } else {
-        console.log("Could not join room.");
-      }
-    });
-
-    socket?.on('opponentJoinedRoom', () => {
-      console.log()
-    })
-  });
-
+export default function CombatScreen({socket}: CombatScreenProp) {
   return (
     <div className='relative overflow-hidden'>
       <div className='fixed right-10 top-[10vh] z-[99]'>
-        <OpScreen/>
+        <OpScreen socket={socket}/>
       </div>
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={30} minSize={20}>
@@ -40,7 +27,7 @@ export default function CombatScreen() {
         <ResizablePanel>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel>
-              <IDE playerType="self"/>
+              <IDE playerType="self" socket={socket}/>
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={20} minSize={20} maxSize={50}>
@@ -50,6 +37,5 @@ export default function CombatScreen() {
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
-   
-  )
+  );
 }

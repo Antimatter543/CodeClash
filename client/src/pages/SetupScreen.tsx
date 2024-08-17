@@ -12,46 +12,44 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import Github from '../assets/svg/svg';
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
+import CombatScreen from "./combatScreen";
 
 export default function SetupScreen() {
     const [inputuser, setInputUsername] = useState('');
     const [inputRoomCode, setInputRoomCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [combat, setCombat] = useState(false); // State to control CombatScreen visibility
     const navigate = useNavigate();
-    
-    const socket = io('http://localhost:3000');
-
-    socket.on('connect', () => {
-        console.log("connected to server with id", socket.id);
-    });
+    const serverURL = 'http://localhost:3000';
+    const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
+        const newSocket = io(serverURL);
+        setSocket(newSocket);
 
-        setInputRoomCode(localStorage.getItem('roomCode') || '');
-        setInputUsername(localStorage.getItem('username') || '');
-
-        socket?.on('confirmCreateRoom', (roomCode) => {
-            setInputRoomCode(roomCode);
-            console.log(socket.id);
-            console.log("Room was created", roomCode);
-            // socket.emit('requestJoinRoom', roomCode, inputuser);
+        newSocket.on('confirmJoin', (success: boolean) => {
+            if (success) {
+                localStorage.setItem('roomCode', inputRoomCode);
+                localStorage.setItem('username', inputuser);
+                setCombat(true); // Set combat to true on successful join
+            }
         });
 
-        socket?.on('confirmJoin', () => {
-            console.log("joined room", inputRoomCode, ", waiting for opponent")
+        newSocket.on('confirmCreateRoom', (roomCode: string) => {
+            if (roomCode) {
+                localStorage.setItem('roomCode', roomCode);
+                localStorage.setItem('username', inputuser);
+                setCombat(true); // Set combat to true on successful room creation
+            }
         });
 
-        socket?.on('playersJoinedRoom', (inputRoomCode) => {
-            console.log("All players joined. Going to battle page");
-            localStorage.setItem('username', inputuser);
-            localStorage.setItem('roomCode', inputRoomCode);
-            navigate('/battle');
-        });
-    }, []);
-    
+        return () => {
+            newSocket.disconnect();
+        };
+    }, [serverURL, navigate, inputRoomCode, inputuser]);
 
     const handleCreateRoom = () => {
         if (!socket) {
@@ -63,9 +61,8 @@ export default function SetupScreen() {
             return;
         }
         
-        console.log("requestCreateRoom");
         socket.emit('requestCreateRoom');
-    }
+    };
 
     const handleJoinRoom = () => {
         if (!socket) {
@@ -81,65 +78,67 @@ export default function SetupScreen() {
             return;
         }
         
-        socket.emit('requestJoinRoom', inputuser, inputRoomCode);
-        
-        // Store username and room code in local storage
+        socket.emit('requestJoinRoom', inputRoomCode, inputuser);
         
         setErrorMessage('');
     };
 
     return (
-        <div className="font-inter w-full h-full flex flex-col justify-center items-center gap-[4rem]">
-            <section className="text-center">
-                <p className="font-semibold text-[2rem]">Show who's the real dev.</p>
-                <p className="mt-2">Online PvP leetcode. Like Tetris but leetcode.</p>
-            </section>
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button className="gap-2" variant="outline">Start with your <Github /></Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Start Game</DialogTitle>
-                        <DialogDescription>
-                            Either create a new room or join an existing room.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
-                                Username
-                            </Label>
-                            <Input
-                                id="username"
-                                defaultValue="leetcoder123"
-                                className="col-span-3"
-                                onChange={(e) => setInputUsername(e.target.value)}
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="roomCode" className="text-right">
-                                Room Code
-                            </Label>
-                            <Input
-                                id="roomCode"
-                                className="col-span-3"
-                                onChange={(e) => setInputRoomCode(e.target.value)}
-                                // value = {inputRoomCode}
-                            />
-                        </div>
-                        {errorMessage && (
-                            <div className="text-red-500 col-span-4 text-center">
-                                {errorMessage}
+        <div>
+            {!combat &&
+                <div className="font-inter w-full h-full flex flex-col justify-center items-center gap-[4rem]">
+                    <section className="text-center">
+                        <p className="font-semibold text-[2rem]">Show who's the real dev.</p>
+                        <p className="mt-2">Online PvP leetcode. Like Tetris but leetcode.</p>
+                    </section>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button className="gap-2" variant="outline">Start with your <Github /></Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Start Game</DialogTitle>
+                                <DialogDescription>
+                                    Either create a new room or join an existing room.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="username" className="text-right">
+                                        Username
+                                    </Label>
+                                    <Input
+                                        id="username"
+                                        defaultValue="leetcoder123"
+                                        className="col-span-3"
+                                        onChange={(e) => setInputUsername(e.target.value)}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="roomCode" className="text-right">
+                                        Room Code
+                                    </Label>
+                                    <Input
+                                        id="roomCode"
+                                        className="col-span-3"
+                                        onChange={(e) => setInputRoomCode(e.target.value)}
+                                    />
+                                </div>
+                                {errorMessage && (
+                                    <div className="text-red-500 col-span-4 text-center">
+                                        {errorMessage}
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                    <DialogFooter>
-                        <Button type="button" onClick={handleCreateRoom}>Create room</Button>
-                        <Button type="button" onClick={handleJoinRoom}>Join room</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                            <DialogFooter>
+                                <Button type="button" onClick={handleCreateRoom}>Create room</Button>
+                                <Button type="button" onClick={handleJoinRoom}>Join room</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            }
+            {combat && <CombatScreen />} {/* Render CombatScreen only if combat is true */}
         </div>
     );
 }
