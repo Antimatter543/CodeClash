@@ -93,5 +93,19 @@ io.on('connect', socket => {
       }
       room.player2.connected = false;
     }
-  })
+  });
+
+  // player edits own code
+  socket.on('sendOwnEdit', (roomCode, username, editType, index, length, text) => {
+    const room = rooms[roomCode];
+    const opponentSocket = socket.to(room.player1.name == username ? room.player2.id : room.player1.id);
+    opponentSocket.emit("receiveOpponentCodeEdit", editType, index, length, text);
+  });
+
+  // player edits opponents code
+  socket.on('sendOpponentEdit', (roomCode, username, editType, index, length, text) => {
+    const room = rooms[roomCode];
+    const opponentSocket = socket.to(room.player1.name == username ? room.player2.id : room.player1.id);
+    opponentSocket.emit("receiveOwnCodeEdit", editType, index, length, text);
+  });
 });
