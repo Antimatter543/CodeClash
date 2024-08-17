@@ -5,7 +5,7 @@
     place-items: center;
     z-index: 0;
 }
-  .element {
+.element {
     position: fixed;
     top: 11vh;   
     right: 5vw;     
@@ -14,4 +14,8 @@
     background: #696969;
     border-radius: 10px;
     z-index: 99;
-    }
+}
+
+.info-icon:hover {
+    color: black;
+}
