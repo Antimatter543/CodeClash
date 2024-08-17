@@ -41,6 +41,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         console.log("Could not find room. Check the code or create a room");
       }
     });
+    
+    newSocket.emit('requestJoinRoom', username, roomCode);
 
     // Cleanup function to disconnect the socket on component unmount
     return () => {
