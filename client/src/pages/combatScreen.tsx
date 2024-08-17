@@ -19,6 +19,7 @@ interface CombatScreenProp {
 
 export default function CombatScreen({ socket, combat, startTimer }: CombatScreenProp) {
   const [fightStarted, setFightStarted] = useState(false);
+  const [problem, setProblem] = useState(null)
   const [time, setTime] = useState(0);
   const roomCode = useState<string>(() => localStorage.getItem('roomCode') || '');
   const handleStartFight = () => {
@@ -29,8 +30,10 @@ export default function CombatScreen({ socket, combat, startTimer }: CombatScree
   };
 
   useEffect(() => {
-    socket?.on('startTimer', (initialTime) => {
-      setTime(initialTime);
+    socket?.on('nextProblem', (problem: any) => {
+      console.log(problem)
+      setProblem(problem)
+      setTime(problem.timeLimit);
     });
 
     return () => {
@@ -78,7 +81,7 @@ export default function CombatScreen({ socket, combat, startTimer }: CombatScree
       </div>
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={30} minSize={20}>
-          <ProblemBar />
+          <ProblemBar problem={problem}/>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel>

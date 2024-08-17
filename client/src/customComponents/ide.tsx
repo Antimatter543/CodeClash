@@ -30,7 +30,6 @@ export default function IDE({ playerType, socket }: IDEProps) {
       editor: editor,
       onInsert(index, text) {
         if (socket && roomCode && username) {
-            console.log(sender, socket.connected, roomCode, username)
             socket.emit(sender, roomCode, username, "Insert", index, 0, text);
         }
         
@@ -38,13 +37,11 @@ export default function IDE({ playerType, socket }: IDEProps) {
       onReplace(index, length, text) {
         if (socket && roomCode && username) {
           socket.emit(sender, roomCode, username, "Replace", index, length, text);
-          console.log("Replace", index, length, text);
         }
       },
       onDelete(index, length) {
         if (socket && roomCode && username) {
           socket.emit(sender, roomCode, username, "Delete", index, length, "");
-          console.log("Delete", index, length);
         }
       },
     });

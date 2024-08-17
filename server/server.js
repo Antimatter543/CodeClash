@@ -20,7 +20,7 @@ async function importProblems() {
   const request = new Request(requestURL);
 
   const response = await fetch(request);
-  const problems = await response.json();
+  problems = await response.json();
 
   console.log("Problems:", problems);
 }
