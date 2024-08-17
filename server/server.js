@@ -1,6 +1,6 @@
 const io = require('socket.io')(3000, {
   cors: {
-    origin: ['http://localhost:8080']
+    origin: ['http://localhost:5174']
   }
 });
 
@@ -29,6 +29,11 @@ io.on('connect', socket => {
   // confirmation log
   console.log("New client:", socket.id);
 
+  function opponentSocket(roomCode, username) {
+    const room = rooms[roomCode];
+    return socket.to(username == room.player1.id ? room.player2.id : room.player1.id);
+  }
+
   // user clicks Create Room
   socket.on('requestCreateRoom', (username) => {
     let roomIndex = rooms.length;
@@ -53,6 +58,9 @@ io.on('connect', socket => {
     roomCode = roomCode.toUpperCase();
     if (rooms.hasOwnProperty(roomCode)) {
       let room = rooms[roomCode];
+      if (room.player1.connected && room.player2.connected) {
+        socket.emit('roomFull');
+      }
       
       if (!room.player1.connected) { // join as player 1
         room.player1 = {
@@ -93,5 +101,39 @@ io.on('connect', socket => {
       }
       room.player2.connected = false;
     }
-  })
+  });
+
+  // player edits own code
+  socket.on('sendOwnEdit', (roomCode, username, editType, index, length, text) => {
+    opponentSocket(roomCode, username).emit("receiveOpponentCodeEdit", editType, index, length, text);
+  });
+
+  // player edits opponents code
+  socket.on('sendOpponentEdit', (roomCode, username, editType, index, length, text) => {
+    opponentSocket(roomCode, username).emit("receiveOwnCodeEdit", editType, index, length, text);
+  });
+
+  // player submits code
+  socket.on('submitCode', (roomCode, username, code, language) => {
+    const room = rooms[roomCode];
+    // code testing
+
+    socket.emit('codeTestResults', consoleOutput, [test1Passed, test2Passed, test3Passed]);
+
+    let points;
+    let powerupPower;
+    // update scoreboard
+    if (passed) {
+      socket.emit('receiveGamePoints', points, powerupPower);
+      opponentSocket().emit('receiveScoreboard', room.scoreBoard);
+    }
+  });
+
+  // test ahfkdahghlfle
+  
+
+  // test sockets of each element
+  socket.on('sendPing', (roomCode, username, componentName) => {
+    console.log("ping received from", roomCode, username, componentName);
+  });
 });
