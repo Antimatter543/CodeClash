@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 
 import Github from '../assets/svg/svg';
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { io, Socket } from 'socket.io-client';
 import CombatScreen from "./combatScreen";
 
@@ -22,7 +21,6 @@ export default function SetupScreen() {
     const [inputRoomCode, setInputRoomCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [combat, setCombat] = useState(false); // State to control CombatScreen visibility
-    const navigate = useNavigate();
     const serverURL = 'http://localhost:3000';
     const [socket, setSocket] = useState<Socket | null>(null);
 
@@ -49,7 +47,7 @@ export default function SetupScreen() {
         return () => {
             newSocket.disconnect();
         };
-    }, [serverURL, navigate, inputRoomCode, inputuser]);
+    }, []);
 
     const handleCreateRoom = () => {
         if (!socket) {
@@ -138,7 +136,7 @@ export default function SetupScreen() {
                     </Dialog>
                 </div>
             }
-            {combat && <CombatScreen />} {/* Render CombatScreen only if combat is true */}
+            {combat && <CombatScreen socket={socket}/>} {/* Render CombatScreen only if combat is true */}
         </div>
     );
 }
