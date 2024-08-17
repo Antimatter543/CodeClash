@@ -7,6 +7,7 @@
 }
 .element {
     position: fixed;
+    display: flex;
     top: 11vh;   
     right: 5vw;     
     width: 250px;
@@ -14,6 +15,8 @@
     background: #696969;
     border-radius: 10px;
     z-index: 99;
+    align-items: flex-start;
+    justify-content: start;
 }
 
 .info-icon:hover {

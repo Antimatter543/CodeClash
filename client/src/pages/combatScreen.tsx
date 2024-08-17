@@ -23,7 +23,7 @@ export default function CombatScreen() {
         <ResizablePanel>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel>
-              <IDE/>
+              <IDE playerType="self"/>
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={20} minSize={20} maxSize={50}>

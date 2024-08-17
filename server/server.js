@@ -1,6 +1,6 @@
 const io = require('socket.io')(3000, {
   cors: {
-    origin: ['http://localhost:5174']
+    origin: ['http://localhost:5173', 'http://localhost:5174']
   }
 });
 
@@ -71,6 +71,7 @@ io.on('connect', socket => {
         if (room.player2.connected) {
           socket.to(room.player2.id).emit('opponentJoinedRoom', room.player2.name);
         }
+        console.log(room.player1.name, "joined room", roomCode);
       } else { // join as player 2
         room.player2 = {
           connected: true, 
@@ -80,6 +81,7 @@ io.on('connect', socket => {
         if (room.player1.connected) {
           socket.to(room.player1.id).emit('opponentJoinedRoom', room.player2.name);
         }
+        console.log(room.player2.name, "joined room", roomCode);
       }
       
       socket.emit('joinRoom', true, roomCode); // true for success
@@ -127,10 +129,7 @@ io.on('connect', socket => {
       socket.emit('receiveGamePoints', points, powerupPower);
       opponentSocket().emit('receiveScoreboard', room.scoreBoard);
     }
-  });
-
-  // test ahfkdahghlfle
-  
+  });  
 
   // test sockets of each element
   socket.on('sendPing', (roomCode, username, componentName) => {

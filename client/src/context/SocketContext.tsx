@@ -3,8 +3,6 @@ import { io, Socket } from 'socket.io-client';
 
 interface SocketContextType {
   socket: Socket | null;
-  createRoom: (username: string) => void;
-  joinRoom: (username: string, code: string) => void;
   leaveRoom: () => void;
   roomCode: string;
   username: string;
@@ -33,6 +31,15 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       setSocket(newSocket); // Set the socket only after connection
     });
 
+    newSocket.on('joinRoom', (success, code) => {
+        if (success) {
+            console.log("Joined room", code);
+            setRoomCode(code);
+        } else {
+            console.log("Could not find room. Check the code or create a room");
+        }
+    });
+
     // Cleanup function to disconnect the socket on component unmount
     return () => {
       if (socketRef.current) {
@@ -43,24 +50,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       }
     };
   }, []);
-
-  const createRoom = (username: string) => {
-    if (roomCode) {
-      leaveRoom();
-    }
-    socketRef.current?.emit('requestCreateRoom', username);
-  };
-
-  const joinRoom = (username: string, code: string) => {
-    if (code.length !== 4) {
-      console.log("Invalid room code");
-      return;
-    } else if (code === roomCode) {
-      console.log("Already in room");
-      return;
-    }
-    socketRef.current?.emit('requestJoinRoom', username, code);
-  };
 
   const leaveRoom = () => {
     if (roomCode) {
@@ -73,7 +62,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   };
 
   return (
-    <SocketContext.Provider value={{ socket, createRoom, joinRoom, leaveRoom, roomCode, username }}>
+    <SocketContext.Provider value={{ socket, leaveRoom, roomCode, username }}>
       {children}
     </SocketContext.Provider>
   );
