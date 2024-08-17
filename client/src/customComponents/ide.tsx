@@ -1,15 +1,26 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Editor, { OnMount } from '@monaco-editor/react';
 import * as MonacoCollabExt from '@convergencelabs/monaco-collab-ext';
-import { useSocket } from '@/context/SocketContext';
-import * as monaco from 'monaco-editor'; // Import monaco-editor types
+import * as monaco from 'monaco-editor';
+import { Socket } from 'socket.io-client';
 
-export default function IDE() {
+// Enum for player types
+const PlayerType = {
+  self: "self",
+  opponent: "opponent",
+} as const;
+
+interface IDEProps {
+  playerType: keyof typeof PlayerType;
+  socket: Socket | null;
+}
+
+export default function IDE({ playerType, socket }: IDEProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const socketContext = useSocket();
-  const socket = socketContext.socket
-  const roomCode = socketContext.roomCode
-  const username = socketContext.username
+  const roomCode = useState<string>(() => localStorage.getItem('roomCode') || '');
+  const username = useState<string>(() => localStorage.getItem('username') || '');
+  const sender = playerType === PlayerType.self ? "sendOwnEdit" : "sendOpponentEdit";
+  const receiver = playerType === PlayerType.self ? "receiveOwnCodeEdit" : "receiveOpponentCodeEdit";
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
@@ -18,28 +29,43 @@ export default function IDE() {
     const contentManager = new MonacoCollabExt.EditorContentManager({
       editor: editor,
       onInsert(index, text) {
-        if (socket) {
-          socket.emit("sendInsert", index, text, roomCode, username);
+        if (socket && roomCode && username) {
+            console.log(sender, socket.connected, roomCode, username)
+            socket.emit(sender, roomCode, username, "Insert", index, 0, text);
         }
-        console.log("Insert", index, text);
+        
       },
       onReplace(index, length, text) {
-        if (socket) {
-          socket.emit("sendReplace", index, text, roomCode, username);
+        if (socket && roomCode && username) {
+          socket.emit(sender, roomCode, username, "Replace", index, length, text);
+          console.log("Replace", index, length, text);
         }
-        console.log("Replace", index, length, text);
       },
       onDelete(index, length) {
-        if (socket) {
-          socket.emit("sendDelete", index, length, roomCode, username);
+        if (socket && roomCode && username) {
+          socket.emit(sender, roomCode, username, "Delete", index, length, "");
+          console.log("Delete", index, length);
         }
-        console.log("Delete", index, length);
       },
     });
 
-    // Example: Insert text
-    contentManager.insert(5, "some text");
-};
+    // Listen for incoming edits
+    if (socket && roomCode && username) {
+      socket.on(receiver, (editType, index, length, text) => {
+        switch (editType) {
+          case "Insert":
+            contentManager.insert(index, text);
+            break;
+          case "Replace":
+            contentManager.replace(index, length, text);
+            break;
+          case "Delete":
+            contentManager.delete(index, length);
+            break;
+        }
+      });
+    }
+  };
 
   return (
     <Editor
