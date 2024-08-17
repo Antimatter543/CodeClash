@@ -46,7 +46,7 @@ def get_reader(language) -> str:
     if language == "Python":
         file_path = './questions/readers/python_readers.py' ## Readers is the reader for language..
     elif language == "Java":
-        file_path = './questions/readers/java_reader.java' ## Readers is the reader for language..
+        file_path = './questions/readers/JavaProblems.java' ## Readers is the reader for language..
     else:
         print("What are you doing we haven't done this language")
         return None
@@ -118,33 +118,33 @@ def run_tests(language: str, judge_code: str, input_data: list, expected_output:
 
 ###################### CODEEEEEEEEEEEEEEEEE ###########
 
-### Data given by FRONTEND
-language_used = "Python"
-question_number = "287"
-user_code = ""
-########################## DATA ABOVE GIVEN BY FRONTEND!!
+# ### Data given by FRONTEND
+# language_used = "Python"
+# question_number = "287"
+# user_code = ""
+# ########################## DATA ABOVE GIVEN BY FRONTEND!!
 
-# The below is available to receive.
+# # The below is available to receive.
 
-with open(f"./questions/solutions/{question_number}.py", 'r') as file:
-        user_code = file.read() ## Instead of this the code would be given by the text in the IDE but yeah..
-# user_code = """
-# class Solution:
-#     def uniqueOccurrences(self, arr):
-#         from collections import Counter
-#         cnts = Counter(arr).values()
-#         return len(cnts) == len(set(cnts))
-# """
-
-
-parser_lang = get_reader(language_used)
-### JUDGE CODE 
-
-judge_code = get_judge_code(language_used, user_code, parser_lang, question_number)
-# print(judge_code)
+# with open(f"./questions/solutions/{question_number}.py", 'r') as file:
+#         user_code = file.read() ## Instead of this the code would be given by the text in the IDE but yeah..
+# # user_code = """
+# # class Solution:
+# #     def uniqueOccurrences(self, arr):
+# #         from collections import Counter
+# #         cnts = Counter(arr).values()
+# #         return len(cnts) == len(set(cnts))
+# # """
 
 
-input_data = read_input_file('./questions/files/'+ question_number +'_test_cases.txt')
-expected_output = read_input_file('./questions/files/'+ question_number +'_answers.txt')
+# parser_lang = get_reader(language_used)
+# ### JUDGE CODE 
 
-run_tests(language_used, judge_code, input_data, expected_output)
+# judge_code = get_judge_code(language_used, user_code, parser_lang, question_number)
+# # print(judge_code)
+
+
+# input_data = read_input_file('./questions/files/'+ question_number +'_test_cases.txt')
+# expected_output = read_input_file('./questions/files/'+ question_number +'_answers.txt')
+
+# run_tests(language_used, judge_code, input_data, expected_output)

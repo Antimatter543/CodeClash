@@ -2,7 +2,7 @@ import requests
 
 # Configuration
 API_URL = "http://127.0.0.1:5000/submit-code"
-USER_CODE_FILE = "../questions/solutions/1207.py"
+USER_CODE_FILE = "../questions/solutions/Python/1207.py"
 
 # Read user code from file
 with open(USER_CODE_FILE, 'r') as file:
