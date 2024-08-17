@@ -10,6 +10,9 @@
     "nodemon": "^3.1.4"
   },
   "dependencies": {
+    "child_process": "^1.0.2",
+    "express": "^4.19.2",
+    "http": "^0.0.1-security",
     "socket.io": "^4.7.5",
     "vm": "^0.1.0"
   }

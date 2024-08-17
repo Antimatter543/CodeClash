@@ -22,7 +22,7 @@ export default function SetupScreen() {
     const [errorMessage, setErrorMessage] = useState('');
     const [ready, setReady] = useState(false)
     const [combat, setCombat] = useState(false); // State to control CombatScreen visibility
-    const serverURL = 'http://10.89.173.14:3000';
+    const serverURL = 'http://localhost:3000';
 
     const [socket, setSocket] = useState<Socket | null>(null);
     const [formattedTime, setFormattedTime] = useState('00:00');

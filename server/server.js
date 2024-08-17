@@ -1,19 +1,34 @@
-const io = require('socket.io')(3000, {
+const { spawnSync } = require('child_process');
+const { readFile } = require('fs/promises');
+const { appendFile } = require('fs/promises');
+const { join } = require('path');
+
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+
+const port = process.env.PORT || 3000;
+const io = require('socket.io')(server, {
   cors: {
     origin: ['http://localhost:5173', 'http://localhost:5174']
   }
 });
 
-const rooms = {};
-// FOUR_CHAR_ROOM_CODE = {
-//   player1.connected, 
-//   player1.name, 
-//   player1.id, 
-//   player2.connected, 
-//   player2.name, 
-//   player2.id, 
-// }
+const pythonAPIURL = "http://3.26.186.241:2358/submissions/?base64_encoded=false&wait=true";
+
 var problems;
+// var problemIds = [76, 119, 287, 557, 1048];
+const problemIds = ["76", "119", "287", "557", "1048"];
+
+app.get('/', async (req, res, next) => {
+  res.sendFile('index.html');
+});
+
+server.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
+
+const rooms = {};
 
 async function importProblems() {
   const requestURL = 'https://raw.githubusercontent.com/Antimatter543/CodeClash/main/questions/questions.json';
@@ -167,30 +182,34 @@ io.on('connect', socket => {
   });
 
   // player submits code
-  // problem number is 
+  // problem number is which question the user is up to, not leetcode id
+  
+  
   socket.on('submitCode', (roomCode, username, problemNumber, code, language) => {
     const room = rooms[roomCode];
-    // code testing
+    
+    submitCode(roomCode, username, problemNumber - 1, code, language);
+  });
 
-    socket.emit('codeTestResults', consoleOutput, [test1Passed, test2Passed, test3Passed]);
+  function sendResults(roomCode, username, result) {
+    const room = rooms[roomCode];
+    const target = room.player1.name == username ? room.player1.id : room.player2.id;
+    io.to(target).emit('receiveTestResults', result);
+  }
 
-    let points;
-    // update scoreboard
-    if (passed) {
-      socket.emit('receiveGamePoints', points, powerupPower);
-      opponentSocket().emit('receiveScoreboard', room.scoreBoard);
-    }
-  });  
+  async function sumbitCode(roomCode, username, problemNumber, code, language) {
+    const requestURL = pythonAPIURL;
+    const request = new Request(requestURL);
 
-  socket.on('requestProblem', (currentProblemNumber, roomCode) => { // send 0 as current problem number to start 
+    const response = await fetch(request);
+    const result = await response.json();
+
+    sendResults(roomCode, username, result);
+  }
+
+  socket.on('requestProblem', (currentProblemNumber) => { // send 0 as current problem number to start 
     const problem = problems[currentProblemNumber];
-    const room = rooms[roomCode[0]]
-    if (currentProblemNumber === 0) {
-      socket.to(room.player1.id).emit('startGame', problem)
-      socket.to(room.player2.id).emit('startGame', problem)
-    } else {
-      socket.emit('nextProblem', problem); // problem object formatted
-    }
+    socket.emit('nextProblem', problem); // problem object formatted
   });
 
 
