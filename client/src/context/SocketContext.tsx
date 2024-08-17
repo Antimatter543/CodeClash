@@ -3,8 +3,8 @@ import { io, Socket } from 'socket.io-client';
 
 interface SocketContextType {
   socket: Socket | null;
-  leaveRoom: () => void;
   setUsername: (username: string) => void;
+  setRoomCode: (roomCode: string) => void;
   roomCode: string;
   username: string;
 }
@@ -31,16 +31,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       socketRef.current = newSocket;
       setSocket(newSocket); // Set the socket only after connection
     });
-
-    newSocket.on('joinRoom', (success, code) => {
-      if (success) {
-        console.log("Joined room", code);
-        setRoomCode(code);
-        localStorage.setItem('roomCode', code);
-      } else {
-        console.log("Could not find room. Check the code or create a room");
-      }
-    });
     
     // Cleanup function to disconnect the socket on component unmount
     return () => {
@@ -59,19 +49,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     }
   }, [username]);
 
-  const leaveRoom = () => {
-    if (roomCode) {
-      socketRef.current?.emit('leaveRoom', roomCode);
-      setRoomCode('');
-      localStorage.removeItem('roomCode');
-      console.log('Left room.');
-    } else {
-      console.log("Not currently in a room.");
-    }
-  };
-
   return (
-    <SocketContext.Provider value={{ socket, leaveRoom, setUsername, roomCode, username }}>
+    <SocketContext.Provider value={{ socket, setRoomCode, setUsername, roomCode, username }}>
       {children}
     </SocketContext.Provider>
   );

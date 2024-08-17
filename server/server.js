@@ -35,58 +35,72 @@ io.on('connect', socket => {
   }
 
   // user clicks Create Room
-  socket.on('requestCreateRoom', (username) => {
+  socket.on('requestCreateRoom', () => {
     let roomIndex = rooms.length;
     let roomCode = generateRoomCode(4);
     rooms[roomCode] = {
       player1: {
-        connected: true, 
-        id: socket.id, 
-        name: username, 
+        connected: false,
+        name: "", 
+        id: "",
       }, 
       player2: {
         connected: false,
+        name: "", 
+        id: "",
       }, 
     };
     console.log("Created room with code", roomCode);
-    console.log("Player", rooms[roomCode].player1.name, "joined", roomCode);
-    socket.emit('joinRoom', true, roomCode);
+    socket.emit("confirmCreateRoom", roomCode);
   });
 
   // user clicks Join Room
-  socket.on('requestJoinRoom', (username, roomCode) => {
+  socket.on('requestJoinRoom', (roomCode, username) => {
     roomCode = roomCode.toUpperCase();
     if (rooms.hasOwnProperty(roomCode)) {
       let room = rooms[roomCode];
-      if (room.player1.connected && room.player2.connected) {
-        socket.emit('roomFull');
-      }
-      
       if (!room.player1.connected) { // join as player 1
-        room.player1 = {
-          connected: true, 
-          id: socket.id, 
-          name: username, 
-        }
-        if (room.player2.connected) {
-          socket.to(room.player2.id).emit('opponentJoinedRoom', room.player2.name);
-        }
-        console.log(room.player1.name, "joined room", roomCode);
+        room.player1.connected = true; 
+        room.player1.id = socket.id;
+        room.player1.name = username;
+        console.log(room.player2.name, "joined room", roomCode);
       } else { // join as player 2
-        room.player2 = {
-          connected: true, 
-          id: socket.id, 
-          name: username, 
-        }
-        if (room.player1.connected) {
-          socket.to(room.player1.id).emit('opponentJoinedRoom', room.player2.name);
-        }
+        room.player2.connected = true; 
+        room.player2.id = socket.id;
+        room.player2.name = username;
         console.log(room.player2.name, "joined room", roomCode);
       }
       
-      socket.emit('joinRoom', true, roomCode); // true for success
+      socket.emit('confirmJoin');
+      if (room.player1.connected && room.player2.connected) {
+        socket.emit('playersJoinedRoom', roomCode);
+      }
     } else {
       socket.emit('joinRoom', false, roomCode); // false for no room
+    }
+  });
+
+  socket.on('requestReconnection', (roomCode, username) => { // reconnect when in battle screen
+    if (rooms.hasOwnProperty(roomCode)) {
+      socket.emit('joinRoom', false, roomCode);
+    }
+    const room = rooms[roomCode];
+    if (room.player1.name == username) {
+      room.player1.connected = true;
+      room.player1.id = socket.id;
+      socket.emit('confirmConnection');
+      if (room.player1.connected) {
+        socket.to(room.player1.id).emit('opponentJoinedRoom', room.player2.name);
+      }
+    } else if (room.player2.name == username) {
+      room.player2.connected = true;
+      room.player1.id = socket.id;
+      socket.emit('confirmConnection');
+      if (room.player1.connected) {
+        socket.to(room.player1.id).emit('opponentJoinedRoom', room.player2.name);
+      }
+    } else {
+      // handle third party
     }
   });
 

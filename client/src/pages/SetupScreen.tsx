@@ -13,17 +13,35 @@ import { Label } from "@/components/ui/label";
 
 import Github from '../assets/svg/svg';
 import { useSocket } from "@/context/SocketContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function SetupScreen() {
-    const socketContext = useSocket();
+    const { setRoomCode, socket, setUsername } = useSocket();
     const [inputuser, setInputUsername] = useState('');
-    const [roomCode, setRoomCode] = useState('');
+    const [inputRoomCode, setInputRoomCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const socket = socketContext.socket;
-    const setUsername = socketContext.setUsername;
     const navigate = useNavigate()
+
+    useEffect(() => {
+        socket?.on('confirmCreateRoom', (roomCode) => {
+            setInputRoomCode(roomCode);
+            console.log(socket.id);
+            console.log("Room was created", roomCode);
+            // socket.emit('requestJoinRoom', roomCode, inputuser);
+        });
+
+        socket?.on('confirmJoin', () => {
+            console.log("joined room", inputRoomCode, ", waiting for opponent")
+        });
+
+        socket?.on('playersJoinedRoom', (roomCode) => {
+            console.log("All players joined. Going to battle page");
+            setRoomCode(inputRoomCode);
+            setUsername(inputuser);
+            navigate('/battle');
+        })
+    }, []);
 
     const handleCreateRoom = () => {
         if (!socket) {
@@ -36,13 +54,8 @@ export default function SetupScreen() {
         }
         
         setUsername(inputuser);
-        socket.emit('requestCreateRoom', inputuser);
-        
-        // Store username in local storage
-        localStorage.setItem('username', inputuser);
-        navigate('/battle')
-
-        setErrorMessage('');
+        console.log("requestCreateRoom");
+        socket.emit('requestCreateRoom');
     }
 
     const handleJoinRoom = () => {
@@ -50,31 +63,25 @@ export default function SetupScreen() {
             setErrorMessage("Error Connecting to socket");
             return;
         }
-        if (!inputuser || !roomCode) {
+        if (!inputuser || !inputRoomCode) {
             setErrorMessage('Both username and room code are required.');
             return;
         }
-        if (roomCode.length !== 4) {
+        if (inputRoomCode.length !== 4) {
             setErrorMessage("Invalid room code");
-            return;
-        } else if (roomCode === socketContext.roomCode) {
-            setErrorMessage("Already in room");
             return;
         }
         
         setUsername(inputuser);
-        socket.emit('requestJoinRoom', inputuser, roomCode);
+        socket.emit('requestJoinRoom', inputuser, inputRoomCode);
         
         // Store username and room code in local storage
         localStorage.setItem('username', inputuser);
-        localStorage.setItem('roomCode', roomCode);
+        localStorage.setItem('roomCode', inputRoomCode);
 
-        navigate('/battle')
         
         setErrorMessage('');
     };
-
-    console.log(socketContext);
 
     return (
         <div className="font-inter w-full h-full flex flex-col justify-center items-center gap-[4rem]">
@@ -112,7 +119,8 @@ export default function SetupScreen() {
                             <Input
                                 id="roomCode"
                                 className="col-span-3"
-                                onChange={(e) => setRoomCode(e.target.value)}
+                                onChange={(e) => setInputRoomCode(e.target.value)}
+                                // value = {inputRoomCode}
                             />
                         </div>
                         {errorMessage && (
