@@ -17,9 +17,8 @@ def submit_code_to_judge0(source_code: str, input_data: str) -> dict:
     return response.json()
 
 # Simple function definition
-source_code = """
-def f(x):
-    return x * 2
+judge0_code = """
+{their_source_code}
 
 # Read input from stdin
 x = int(input().strip())
