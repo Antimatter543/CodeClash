@@ -1,48 +1,60 @@
-import requests
-import json
+"""from typing import List
 
-# Your code to submit
-source_code = """
-def two_sum(nums, target):
-    num_map = {}
-    for i, num in enumerate(nums):
-        complement = target - num
-        if complement in num_map:
-            return [num_map[complement], i]
-        num_map[num] = i
-    return []
 
-import sys
-import json
+class Solution:
+    Memo = {}
 
-# Read input from stdin
-data = json.loads(sys.stdin.read())
-nums = data['nums']
-target = data['target']
-
-# Run the function and print the result
-print(two_sum(nums, target))
+    def getRow(self, rowIndex: int) -> List[int]:
+        if rowIndex in self.Memo:
+            return self.Memo[rowIndex]
+        if rowIndex == 0:
+            return [1]
+        ListPrec = self.getRow(rowIndex - 1)
+        Result = [1]
+        for i in range(0, len(ListPrec) - 1):
+            Result.append(ListPrec[i] + ListPrec[i + 1])
+        Result.append(1)
+        self.Memo[rowIndex] = Result
+        return Result
 """
 
-# Input data
-input_data = {
-    "nums": [2, 7, 11, 15],
-    "target": 9
-}
+dictthing = {("Python", "listint"): "Problems.lintconverter", ("Python, liststr"): "Problems.lstrconverter",
+             ("Python", "int"): "Problems.intconverter", ("Python, str"): "Problems.strconverter",
+             ("Java", "strconverter"): "JavaProblems.strconverter"}
 
-# Prepare the payload
-payload = {
-    "source_code": source_code,
-    "language_id": 71,  # Python 3.8.1
-    "stdin": json.dumps(input_data),
-    "wait": True
-}
+if python:
+    judge= """{string}
 
-JUDGE0_API_URL = "http://3.24.180.98/2358/submissions/"
-# Submit to Judge0
-response = requests.post(JUDGE0_API_URL, json=payload)
-result = response.json()
+    {readers file}
 
-# Print the result
-print("Output:", result['stdout'])
-print("Expected:", "[0, 1]")  # Expected output for comparison
+    // get stdin
+
+    parsed_input = {dictthing["Python", "listint")}(stdin)  }
+    sol = Solution()
+    print(sol.getRow(parsed_input))
+    """
+if java:
+    judge = """
+    {java string}
+
+    {java reader}
+
+    var parsed_input = {dictthing[("Java", lstrconverter]} 
+    Sol solution = Sol() 
+    systems.tsloitut(solution.getRow(parsed_input))
+    """
+if c:
+ judge = """...."""
+
+
+dict["language", "listint"] = 
+
+func = dict["language", "listint"] 
+
+parsed_input = func(stdin)
+sol = Solution()
+print(sol.getRow(parsed_input))
+"
+// send to judge and get output string
+
+// compare judge output to answers.txt output

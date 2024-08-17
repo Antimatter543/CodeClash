@@ -21,13 +21,13 @@ class Problems:
     def lintconverter(stdin: str) -> List[int]:
         nums = list(map(int, stdin.strip().split(',')))
         return nums,
-
-    def strintconverter(stdin: str) -> int:
-        return int(stdin.strip())
     
     def lstrconverter(stdin: str) -> List[str]:
-        words = list(map(int, stdin.strip().split(',')))
+        words = list(map(str, stdin.strip().split(',')))
         return words,
 
-    def strstrconverter(stdin: str) -> str:
+    def intconverter(stdin: str) -> int:
+        return int(stdin.strip())
+
+    def strconverter(stdin: str) -> str:
         return stdin
