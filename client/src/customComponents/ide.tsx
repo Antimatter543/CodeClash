@@ -29,9 +29,9 @@ export default function IDE({ playerType, socket }: IDEProps) {
     const contentManager = new MonacoCollabExt.EditorContentManager({
       editor: editor,
       onInsert(index, text) {
-        if (roomCode && username) {
-            console.log(sender, socket?.connected)
-            socket?.emit(sender, roomCode, username, "Insert", index, 0, text);
+        if (socket && roomCode && username) {
+            console.log(sender, socket.connected, roomCode, username)
+            socket.emit(sender, roomCode, username, "Insert", index, 0, text);
         }
         
       },
