@@ -1,4 +1,13 @@
 {
+  "devDependencies": {
+    "snowpack": "^3.8.8"
+  },
+  "name": "testclient",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "start": "snowpack dev"
+  },
   "dependencies": {
     "socket.io-client": "^4.7.5"
   }
