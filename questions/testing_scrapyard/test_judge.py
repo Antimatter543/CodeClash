@@ -84,8 +84,8 @@ def read_input_file(file_path: str) -> list:
     return lines
 
 
-input_data = read_input_file('./questions/files/119_test_cases.txt')
-expected_output = read_input_file('./questions/files/119_answers.txt')
+input_data = read_input_file('./questions/files/'+ question +'_test_cases.txt')
+expected_output = read_input_file('./questions/files/'+ question +'_answers.txt')
 
 print(input_data, expected_output)
 
