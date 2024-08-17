@@ -197,7 +197,8 @@ io.on('connect', socket => {
     io.to(target).emit('receiveTestResults', result);
   }
 
-  async function sumbitCode(roomCode, username, problemNumber, code, language) {
+  // sends request to python server
+  async function submitCode(roomCode, username, problemNumber, code, language) {
     const requestURL = pythonAPIURL;
     const request = new Request(requestURL);
 
