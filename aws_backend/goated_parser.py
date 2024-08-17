@@ -57,35 +57,16 @@ def get_reader(language) -> str:
 
 
 
-### Data given by FRONTEND
-language_used = "Python"
-question_number = "1207"
-user_code = ""
-
-with open(f"./questions/solutions/{question_number}.py", 'r') as file:
-        user_code = file.read() ## Instead of this the code would be given by the text in the IDE but yeah..
-# user_code = """
-# class Solution:
-#     def uniqueOccurrences(self, arr):
-#         from collections import Counter
-#         cnts = Counter(arr).values()
-#         return len(cnts) == len(set(cnts))
-# """
-### Data given by FRONTEND ^^^^^
-
-func_name, question_type = dictquestion[question_number]
-parser_lang = get_reader(language_used)
-
-### JUDGE CODE 
-
-def get_judge_code(language: str):
+def get_judge_code(language: str, user_code: str, parser_lang: str, question_number):
+    
     if language == "Python":
+        func_name, question_type = dictquestion[question_number]
         judge_code = f"""
 {user_code} \n
 {parser_lang} \n
     
 inputs = input()
-parsed_input = {dictthing[(language_used, question_type)]}(inputs)
+parsed_input = {dictthing[(language, question_type)]}(inputs)
 
 sol = Solution()
 print(sol.{func_name}(parsed_input))
@@ -93,8 +74,7 @@ print(sol.{func_name}(parsed_input))
     ### Other code for java etc below
     return judge_code
 
-judge_code = get_judge_code(language_used)
-# print(judge_code)
+
 
 def read_input_file(file_path: str) -> list:
     """Read a file and return its contents as a list of strings, each line as an element."""
@@ -105,36 +85,66 @@ def read_input_file(file_path: str) -> list:
     return lines
 
 
-input_data = read_input_file('./questions/files/'+ question_number +'_test_cases.txt')
-expected_output = read_input_file('./questions/files/'+ question_number +'_answers.txt')
-
 # print(input_data, expected_output)
 
 ### Throw it to judge, and handle the result
 
 # Submit the code and input to Judge0
-for i in range(len(input_data)):
+def run_tests(language: str, judge_code: str, input_data: list, expected_output: list):
+        
+    for i in range(len(input_data)):
 
-    result = submit_code_to_judge0(language_used, judge_code, input_data[i])
-    print(f"Raw result {result}")
-    # Print the results
-    print("Output:", result.get('stdout', '').strip())
-    print("Expected:", expected_output[i])
+        result = submit_code_to_judge0(language, judge_code, input_data[i])
+        print(f"Raw result {result}")
+        # Print the results
+        print("Output:", result.get('stdout', '').strip())
+        print("Expected:", expected_output[i])
 
-    # Handle the stderr output safely
-    stderr_output = result.get('stderr')
-    if stderr_output:
-        print("Errors:", stderr_output.strip())
-    else:
-        print("Errors: None")
+        # Handle the stderr output safely
+        stderr_output = result.get('stderr')
+        if stderr_output:
+            print("Errors:", stderr_output.strip())
+        else:
+            print("Errors: None")
 
-    print("Execution Status:", result.get('status', {}).get('description', 'Unknown'))
+        print("Execution Status:", result.get('status', {}).get('description', 'Unknown'))
 
-    # Compare the output to the expected output
-    if result.get('stdout', '').strip() == expected_output[i]:
-        print("Test PASSED")
-    else:
-        print("Test FAILED")
+        # Compare the output to the expected output
+        if result.get('stdout', '').strip() == expected_output[i]:
+            print("Test PASSED")
+        else:
+            print("Test FAILED")
 
 
+###################### CODEEEEEEEEEEEEEEEEE ###########
 
+### Data given by FRONTEND
+language_used = "Python"
+question_number = "287"
+user_code = ""
+########################## DATA ABOVE GIVEN BY FRONTEND!!
+
+# The below is available to receive.
+
+with open(f"./questions/solutions/{question_number}.py", 'r') as file:
+        user_code = file.read() ## Instead of this the code would be given by the text in the IDE but yeah..
+# user_code = """
+# class Solution:
+#     def uniqueOccurrences(self, arr):
+#         from collections import Counter
+#         cnts = Counter(arr).values()
+#         return len(cnts) == len(set(cnts))
+# """
+
+
+parser_lang = get_reader(language_used)
+### JUDGE CODE 
+
+judge_code = get_judge_code(language_used, user_code, parser_lang, question_number)
+# print(judge_code)
+
+
+input_data = read_input_file('./questions/files/'+ question_number +'_test_cases.txt')
+expected_output = read_input_file('./questions/files/'+ question_number +'_answers.txt')
+
+run_tests(language_used, judge_code, input_data, expected_output)
