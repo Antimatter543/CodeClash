@@ -188,9 +188,9 @@ io.on('connect', socket => {
     if (currentProblemNumber === 0) {
       socket.to(room.player1.id).emit('startGame', problem)
       socket.to(room.player2.id).emit('startGame', problem)
+    } else {
+      socket.emit('nextProblem', problem); // problem object formatted
     }
-    
-    socket.('nextProblem', problem); // problem object formatted
   });
 
 
