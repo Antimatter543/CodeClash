@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import Github from '../assets/svg/svg';
 import { useState, useEffect } from "react";
 import { io, Socket } from 'socket.io-client';
 import CombatScreen from "./combatScreen";
@@ -20,6 +19,7 @@ export default function SetupScreen() {
     const [inputuser, setInputUsername] = useState('');
     const [inputRoomCode, setInputRoomCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [ready, setReady] = useState(false)
     const [combat, setCombat] = useState(false); // State to control CombatScreen visibility
     const serverURL = 'http://localhost:3000';
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -32,7 +32,7 @@ export default function SetupScreen() {
             if (success) {
                 localStorage.setItem('roomCode', roomCode);
                 localStorage.setItem('username', username);
-                setCombat(true); // Set combat to true on successful join
+                setReady(true); // Set combat to true on successful join
             }
         });
 
@@ -40,9 +40,13 @@ export default function SetupScreen() {
             if (success) {
                 localStorage.setItem('roomCode', roomCode);
                 localStorage.setItem('username', username);
-                setCombat(true); // Set combat to true on successful room creation
+                setReady(true); // Set combat to true on successful room creation
             }
         });
+
+        newSocket.on('playersJoinedRoom', (success: boolean) => {
+            setCombat(success)
+        })
 
         return () => {
             newSocket.disconnect();
@@ -82,8 +86,8 @@ export default function SetupScreen() {
     };
 
     return (
-        <div>
-            {!combat &&
+        <div className="h-full">
+            {!ready &&
                 <div className="font-inter w-full h-full flex flex-col justify-center items-center gap-[4rem]">
                     <section className="text-center">
                         <p className="font-semibold text-[2rem]">Show who's the real dev.</p>
@@ -91,7 +95,7 @@ export default function SetupScreen() {
                     </section>
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className="gap-2" variant="outline">Start with your <Github /></Button>
+                            <Button className="gap-2" variant="outline">Start Now</Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
@@ -136,7 +140,7 @@ export default function SetupScreen() {
                     </Dialog>
                 </div>
             }
-            {combat && <CombatScreen socket={socket}/>} {/* Render CombatScreen only if combat is true */}
+            {ready && <CombatScreen combat={combat} socket={socket}/>} {/* Render CombatScreen only if combat is true */}
         </div>
     );
 }

@@ -102,7 +102,8 @@ io.on('connect', socket => {
         console.log(room);
   
         if (room.player1.connected && room.player2.connected) {
-            io.to(roomCode).emit('playersJoinedRoom', roomCode);
+            socket.to(room.player1.id).emit('playersJoinedRoom', true);
+            socket.to(room.player2.id).emit('playersJoinedRoom', true);
             console.log(`Both players have joined room ${roomCode}.`);
             console.log(room);
         }
