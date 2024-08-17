@@ -30,6 +30,7 @@ io.on('connect', socket => {
   console.log("New client:", socket.id);
 
   function opponentSocket(roomCode, username) {
+    console.log("opponentSocket()", roomCode, username);
     const room = rooms[roomCode];
     console.log(room)
     if (room.player1.name === username) {
@@ -54,6 +55,7 @@ io.on('connect', socket => {
       }, 
     };
     console.log("Created room with code", roomCode);
+    listRoomMembers()
     socket.emit("confirmCreateRoom", true, roomCode, username);
   });
 
@@ -79,14 +81,14 @@ io.on('connect', socket => {
         console.log(`Room ${roomCode} found. Current state:`, room);
   
         if (!room.player1.connected) { // join as player 1
-            room.player1.connected = true; 
-            room.player1.id = socket.id;
-            room.player1.name = username;
+            rooms[roomCode].player1.connected = true; 
+            rooms[roomCode].player1.id = socket.id;
+            rooms[roomCode].player1.name = username;
             console.log(`${username} joined room ${roomCode} as player 1. Player 1 ID: ${socket.id}`);
         } else if (!room.player2.connected) { // join as player 2
-            room.player2.connected = true; 
-            room.player2.id = socket.id;
-            room.player2.name = username;
+            rooms[roomCode].player2.connected = true; 
+            rooms[roomCode].player2.id = socket.id;
+            rooms[roomCode].player2.name = username;
             console.log(`${username} joined room ${roomCode} as player 2. Player 2 ID: ${socket.id}`);
         } else {
             console.log(`Room ${roomCode} is full. User ${username} cannot join.`);
@@ -97,10 +99,12 @@ io.on('connect', socket => {
         socket.join(roomCode);
         socket.emit('confirmJoin', true, roomCode, username); // Emit success message
         console.log(`User ${username} successfully joined room ${roomCode}.`);
+        console.log(room);
   
         if (room.player1.connected && room.player2.connected) {
             io.to(roomCode).emit('playersJoinedRoom', roomCode);
             console.log(`Both players have joined room ${roomCode}.`);
+            console.log(room);
         }
     } else {
         console.log(`Room ${roomCode} does not exist. User ${username} cannot join.`);
@@ -113,11 +117,11 @@ io.on('connect', socket => {
     for (const roomCode in rooms) {
       const room = rooms[roomCode];
       if (room.player1.id === socket.id) {
-        room.player1.connected = false;
+        rooms[roomCode].player1.connected = false;
         io.to(room.player2.id).emit('opponentDisconnected', room.player1.name);
         console.log(room.player1.name, "disconnected from room", roomCode);
       } else if (room.player2.id === socket.id) {
-        room.player2.connected = false;
+        rooms[roomCode].player2.connected = false;
         io.to(room.player1.id).emit('opponentDisconnected', room.player2.name);
         console.log(room.player2.name, "disconnected from room", roomCode);
       }
@@ -128,10 +132,10 @@ io.on('connect', socket => {
     let room = rooms[roomCode];
     if (room) {
       if (room.player1.id === socket.id) {
-        room.player1.connected = false;
+        rooms[roomCode].player1.connected = false;
         io.to(room.player2.id).emit('opponentDisconnected', room.player1.name);
       } else if (room.player2.id === socket.id) {
-        room.player2.connected = false;
+        rooms[roomCode].player2.connected = false;
         io.to(room.player1.id).emit('opponentDisconnected', room.player2.name);
       }
     }
@@ -139,13 +143,13 @@ io.on('connect', socket => {
 
   // player edits own code
   socket.on('sendOwnEdit', (roomCode, username, editType, index, length, text) => {
-    opponentSocket(roomCode, username).emit("receiveOpponentCodeEdit", editType, index, length, text);
+    opponentSocket(roomCode[0], username[0]).emit("receiveOpponentCodeEdit", editType, index, length, text);
     console.log("playeredited")
   });
 
   // player edits opponents code
   socket.on('sendOpponentEdit', (roomCode, username, editType, index, length, text) => {
-    opponentSocket(roomCode, username).emit("receiveOwnCodeEdit", editType, index, length, text);
+    opponentSocket(roomCode[0], username[0]).emit("receiveOwnCodeEdit", editType, index, length, text);
     console.log("openenedited code")
   });
 
