@@ -221,7 +221,7 @@ io.on('connect', socket => {
 
   // activate code swap for opponent
   socket.on('sendCodeSwap', (roomCode, username) => {
-    opponentSocket(roomCode[0], username[0]).emit('triggerCodeSwap');
+    opponentSocket(roomCode[0], username[0]).emit('triggerCodeSwap', username[0]);
     console.log(`Room ${roomCode}: ${username} edited opponent's code`);
   });
   
@@ -232,17 +232,17 @@ io.on('connect', socket => {
   });
 
   socket.on('sendDisableMouse', (roomCode, username) => {
-    opponentSocket(roomCode[0], username[0]).emit('triggerDisableMouse');
+    opponentSocket(roomCode[0], username[0]).emit('triggerDisableMouse', username[0]);
     console.log(`Room ${roomCode}: ${username} edited opponent's code`);
   });
 
   socket.on('sendDisableArrowKeys', (roomCode, username) => {
-    opponentSocket(roomCode[0], username[0]).emit('triggerDisableArrowKeys');
+    opponentSocket(roomCode[0], username[0]).emit('triggerDisableArrowKeys', username[0]);
     console.log(`Room ${roomCode}: ${username} used disable arrow keys`);
   });
 
   socket.on('sendDisableShortcuts', (roomCode, username) => {
-    opponentSocket(roomCode[0], username[0]).emit('');
+    opponentSocket(roomCode[0], username[0]).emit('triggerDisableShortcuts', username[0]);
     console.log(`Room ${roomCode}: ${username} used disable arrow keys`);
   });
 });
