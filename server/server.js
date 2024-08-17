@@ -15,6 +15,18 @@ const rooms = {};
 // }
 var problems;
 
+async function importProblems() {
+  const requestURL = 'https://raw.githubusercontent.com/Antimatter543/CodeClash/main/questions/questions.json';
+  const request = new Request(requestURL);
+
+  const response = await fetch(request);
+  problems = await response.json();
+
+  console.log("Problems:", problems);
+}
+
+importProblems();
+
 function generateRoomCode(length) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let code = "";
@@ -102,8 +114,8 @@ io.on('connect', socket => {
         console.log(room);
   
         if (room.player1.connected && room.player2.connected) {
-            socket.to(room.player1.id).emit('playersJoinedRoom', true);
-            socket.to(room.player2.id).emit('playersJoinedRoom', true);
+            io.to(room.player1.id).emit('playersJoinedRoom', true, room.player2.name);
+            io.to(room.player2.id).emit('playersJoinedRoom', true, room.player1.name);
             console.log(`Both players have joined room ${roomCode}.`);
             console.log(room);
         }
@@ -155,14 +167,14 @@ io.on('connect', socket => {
   });
 
   // player submits code
-  socket.on('submitCode', (roomCode, username, code, language) => {
+  // problem number is 
+  socket.on('submitCode', (roomCode, username, problemNumber, code, language) => {
     const room = rooms[roomCode];
     // code testing
 
     socket.emit('codeTestResults', consoleOutput, [test1Passed, test2Passed, test3Passed]);
 
     let points;
-    let powerupPower;
     // update scoreboard
     if (passed) {
       socket.emit('receiveGamePoints', points, powerupPower);
@@ -170,8 +182,21 @@ io.on('connect', socket => {
     }
   });  
 
-  // test sockets of each element
-  socket.on('sendPing', (roomCode, username, componentName) => {
-    console.log("ping received from", roomCode, username, componentName);
+  socket.on('requestProblem', (currentProblemNumber, roomCode) => { // send 0 as current problem number to start 
+    const problem = problems[currentProblemNumber];
+    const room = rooms[roomCode[0]]
+    if (currentProblemNumber === 0) {
+      io.to(room.player1.id).emit('startGame', problem)
+      io.to(room.player2.id).emit('startGame', problem)
+    } else {
+      socket.emit('nextProblem', problem); // problem object formatted
+    }
   });
+
+
+
+  // test sockets of each element
+  
+
+  // 
 });
