@@ -13,7 +13,16 @@ const rooms = {};
 //   player2.name, 
 //   player2.id, 
 // }
-var problems;
+setInterval(() => {
+  console.log("removing unused servers...");
+  for (let code in rooms) {
+    let room = rooms[code];
+    if (room.player1.connected || room.player2.connected) {
+      return
+    }
+    rooms[code] = null;
+  }
+}, 10000);
 
 function generateRoomCode(length) {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -24,14 +33,20 @@ function generateRoomCode(length) {
   return code;
 }
 
+setInterval(() => {
+  clients.forEach
+})
+
 // define interactions in here
 io.on('connect', socket => {
   // confirmation log
   console.log("New client:", socket.id);
+  clients.push(socket.id);
+  clientLastResponses.push(0);
 
   function opponentSocket(roomCode, username) {
-    const room = rooms[roomCode];
-    console.log(room)
+    let room = rooms[roomCode];
+    console.log(room);
     if (room.player1.name === username) {
       return io.to(room.player2.id);
     } else {

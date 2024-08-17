@@ -22,6 +22,7 @@ export default function SetupScreen() {
     const [errorMessage, setErrorMessage] = useState('');
     const [combat, setCombat] = useState(false); // State to control CombatScreen visibility
     const serverURL = 'http://localhost:3000';
+
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
