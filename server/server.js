@@ -33,16 +33,10 @@ function generateRoomCode(length) {
   return code;
 }
 
-setInterval(() => {
-  clients.forEach
-})
-
 // define interactions in here
 io.on('connect', socket => {
   // confirmation log
   console.log("New client:", socket.id);
-  clients.push(socket.id);
-  clientLastResponses.push(0);
 
   function opponentSocket(roomCode, username) {
     console.log("opponentSocket()", roomCode, username);
