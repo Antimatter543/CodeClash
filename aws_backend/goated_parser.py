@@ -127,7 +127,17 @@ def run_tests(language: str, judge_code: str, input_data: list, expected_output:
         print("Execution Status:", result.get('status', {}).get('description', 'Unknown'))
 
         # Compare the output to the expected output
-        if result.get('stdout', '').strip() == expected_output[i]:
+        if language == "Java" and expected_output[i] == "True":
+            if result.get('stdout', '').strip() == "true":
+                print("Test PASSED")
+            else:
+                print("Test FAILED")
+        elif language == "Java" and expected_output[i] == "False":
+            if result.get('stdout', '').strip() == "false":
+                print("Test PASSED")
+            else:
+                print("Test FAILED")
+        elif result.get('stdout', '').strip() == expected_output[i]:
             print("Test PASSED")
         else:
             print("Test FAILED")
