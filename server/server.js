@@ -108,4 +108,9 @@ io.on('connect', socket => {
     const opponentSocket = socket.to(room.player1.name == username ? room.player2.id : room.player1.id);
     opponentSocket.emit("receiveOwnCodeEdit", editType, index, length, text);
   });
+
+  // test sockets of each element
+  socket.on('sendPing', (roomCode, username, elementName) => {
+    console.log("ping received from", roomCode, username, elementName);
+  });
 });
