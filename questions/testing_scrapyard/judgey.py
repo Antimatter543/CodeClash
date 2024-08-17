@@ -13,7 +13,7 @@ def submit_code_to_judge0(source_code: str, input_data: str) -> dict:
         "language_id": LANGUAGE_ID,
         "stdin": input_data,
         "wait": True
-    }
+    } 
     response = requests.post(JUDGE0_API_URL, json=payload)
     response.raise_for_status()
     return response.json()
