@@ -21,7 +21,8 @@ export default function SetupScreen() {
     const [errorMessage, setErrorMessage] = useState('');
     const [ready, setReady] = useState(false)
     const [combat, setCombat] = useState(false); // State to control CombatScreen visibility
-    const serverURL = 'http://localhost:3000';
+    const serverURL = 'http://10.89.173.14:3000';
+
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
@@ -33,6 +34,7 @@ export default function SetupScreen() {
                 localStorage.setItem('roomCode', roomCode);
                 localStorage.setItem('username', username);
                 setReady(true); // Set combat to true on successful join
+                setCombat(true);
             }
         });
 
@@ -46,6 +48,7 @@ export default function SetupScreen() {
 
         newSocket.on('playersJoinedRoom', (success: boolean) => {
             setCombat(success)
+            console.log("setSuccess", success);
         })
 
         return () => {
