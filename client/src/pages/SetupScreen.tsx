@@ -36,10 +36,10 @@ export default function SetupScreen() {
             }
         });
 
-        newSocket.on('confirmCreateRoom', (roomCode: string) => {
+        newSocket.on('confirmCreateRoom', (roomCode: string, username: string) => {
             if (roomCode) {
                 localStorage.setItem('roomCode', roomCode);
-                localStorage.setItem('username', inputuser);
+                localStorage.setItem('username', username);
                 setCombat(true); // Set combat to true on successful room creation
             }
         });

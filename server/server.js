@@ -31,6 +31,7 @@ io.on('connect', socket => {
 
   function opponentSocket(roomCode, username) {
     const room = rooms[roomCode];
+    console.log(room)
     if (room.player1.name === username) {
       return io.to(room.player2.id);
     } else {
@@ -53,7 +54,7 @@ io.on('connect', socket => {
       }, 
     };
     console.log("Created room with code", roomCode);
-    socket.emit("confirmCreateRoom", roomCode);
+    socket.emit("confirmCreateRoom", true, roomCode, username);
   });
 
   function listRoomMembers() {
@@ -94,7 +95,7 @@ io.on('connect', socket => {
         }
       
         socket.join(roomCode);
-        socket.emit('confirmJoin', true); // Emit success message
+        socket.emit('confirmJoin', true, roomCode, username); // Emit success message
         console.log(`User ${username} successfully joined room ${roomCode}.`);
   
         if (room.player1.connected && room.player2.connected) {
