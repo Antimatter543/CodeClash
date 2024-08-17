@@ -1,7 +1,6 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import Editor, { OnMount } from '@monaco-editor/react';
 import * as MonacoCollabExt from '@convergencelabs/monaco-collab-ext';
-import { useSocket } from '@/context/SocketContext';
 import * as monaco from 'monaco-editor';
 
 // Enum for player types
@@ -16,24 +15,10 @@ interface IDEProps {
 
 export default function IDE({ playerType }: IDEProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const socketContext = useSocket();
-  const socket = socketContext.socket;
-  const roomCode = socketContext.roomCode;
-  const username = socketContext.username;
-  const [sender, setSender] = useState("");
-  const [receiver, setReceiver] = useState("");
-
-  console.log(socketContext)
-
-  useEffect(() => {
-    if (playerType === PlayerType.self) {
-      setSender("sendOwnEdit");
-      setReceiver("receiveOwnCodeEdit");
-    } else {
-      setSender("sendOpponentEdit");
-      setReceiver("receiveOpponentCodeEdit");
-    }
-  }, [playerType]);
+  const [roomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
+  const [username] = useState<string>(() => localStorage.getItem('username') || '');
+  const sender = playerType === PlayerType.self ? "sendOwnEdit" : "sendOpponentEdit";
+  const receiver = playerType === PlayerType.self ? "receiveOwnCodeEdit" : "receiveOpponentCodeEdit";
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
@@ -42,9 +27,8 @@ export default function IDE({ playerType }: IDEProps) {
     const contentManager = new MonacoCollabExt.EditorContentManager({
       editor: editor,
       onInsert(index, text) {
-        if ((socket != null) && (roomCode != null) && (username != null)) {
-          socket.emit(sender, roomCode, username, "Insert", index, 0, text);
-          console.log("Insert", index, text);
+        if (roomCode && username) {
+            socket.emit(sender, roomCode, username, "Insert", index, 0, text);
         }
         
       },

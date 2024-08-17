@@ -1,11 +1,9 @@
 import { useLocation } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InfoIcon } from "lucide-react";
-import { useSocket } from '@/context/SocketContext';
 
 export default function Navbar() {
     const location = useLocation();
-    const { socket } = useSocket()
 
     return (
         <div className="flex justify-between w-full border-b-[1px] border-neutral-200 font-inter px-10 py-5">

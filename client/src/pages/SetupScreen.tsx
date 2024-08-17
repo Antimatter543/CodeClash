@@ -12,13 +12,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import Github from '../assets/svg/svg';
-// import { useSocket } from "@/context/SocketContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from 'socket.io-client';
 
 export default function SetupScreen() {
-    // const { setRoomCode, socket, setUsername } = useSocket();
     const [inputuser, setInputUsername] = useState('');
     const [inputRoomCode, setInputRoomCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -46,7 +44,7 @@ export default function SetupScreen() {
             console.log("joined room", inputRoomCode, ", waiting for opponent")
         });
 
-        socket?.on('playersJoinedRoom', (roomCode) => {
+        socket?.on('playersJoinedRoom', (inputRoomCode) => {
             console.log("All players joined. Going to battle page");
             localStorage.setItem('username', inputuser);
             localStorage.setItem('roomCode', inputRoomCode);

@@ -9,10 +9,8 @@ import {
 import Console from '@/customComponents/Console';
 import OpScreen from '@/customComponents/OpScreen';
 import { useEffect } from 'react';
-import { useSocket } from '@/context/SocketContext';
 
 export default function CombatScreen() {
-  const { socket, roomCode, username } = useSocket();
   useEffect(() => {
     socket?.emit('requestReconnection', roomCode, username);
 
