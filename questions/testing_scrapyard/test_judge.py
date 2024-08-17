@@ -23,7 +23,7 @@ dictthing = {("Python", "listint"): "Problems().lintconverter", ("Python, listst
 
              ("Java", "lintconverter"): "JavaProblems.lintconverter",("Java", "liststr"): "JavaProblems.lstrconverter",
              ("Java", "int"): "JavaProblems.intconverter",("Java", "str"): "JavaProblems.strconverter",
-             
+
              ("C", "lintconverter"): "CProblems.lintconverter",("C", "liststr"): "CProblems.lstrconverter",
              ("C", "int"): "CProblems.intconverter",("C", "str"): "CProblems.strconverter",}
 
@@ -75,33 +75,45 @@ print(sol.{dictquestion[question]}(parsed_input))
 
 # print(judge_code)
 
-input_data = "0"
-expected_output = "[1]"
+def read_input_file(file_path: str) -> list:
+    """Read a file and return its contents as a list of strings, each line as an element."""
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        # Strip newline characters from each line
+        lines = [line.strip() for line in lines]
+    return lines
 
+
+input_data = read_input_file('./questions/files/119_test_cases.txt')
+expected_output = read_input_file('./questions/files/119_answers.txt')
+
+print(input_data, expected_output)
 
 ### Throw it to judge, and handle the result
 
 # Submit the code and input to Judge0
-result = submit_code_to_judge0(judge_code, input_data)
-print(f"Raw result {result}")
-# Print the results
-print("Output:", result.get('stdout', '').strip())
-print("Expected:", expected_output)
+for i in range(len(input_data)):
 
-# Handle the stderr output safely
-stderr_output = result.get('stderr')
-if stderr_output:
-    print("Errors:", stderr_output.strip())
-else:
-    print("Errors: None")
+    result = submit_code_to_judge0(judge_code, input_data[i])
+    print(f"Raw result {result}")
+    # Print the results
+    print("Output:", result.get('stdout', '').strip())
+    print("Expected:", expected_output[i])
 
-print("Execution Status:", result.get('status', {}).get('description', 'Unknown'))
+    # Handle the stderr output safely
+    stderr_output = result.get('stderr')
+    if stderr_output:
+        print("Errors:", stderr_output.strip())
+    else:
+        print("Errors: None")
 
-# Compare the output to the expected output
-if result.get('stdout', '').strip() == expected_output:
-    print("Test PASSED")
-else:
-    print("Test FAILED")
+    print("Execution Status:", result.get('status', {}).get('description', 'Unknown'))
+
+    # Compare the output to the expected output
+    if result.get('stdout', '').strip() == expected_output[i]:
+        print("Test PASSED")
+    else:
+        print("Test FAILED")
 
 
 
