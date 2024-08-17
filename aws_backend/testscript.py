@@ -1,8 +1,8 @@
 import requests
 
 # Configuration
-API_URL = "http://3.26.186.241:5000/submit-code"
-USER_CODE_FILE = "../questions/solutions/Python/1207.py"
+API_URL = "http://127.0.0.1:5000/submit-code"
+USER_CODE_FILE = "./questions/solutions/Java/1207.java"
 
 # Read user code from file
 with open(USER_CODE_FILE, 'r') as file:
@@ -11,7 +11,7 @@ with open(USER_CODE_FILE, 'r') as file:
 print(user_code)
 # Prepare the data to be sent in the POST request
 data = {
-    "language": "Python",
+    "language": "Java",
     "question_number": "1207",
     "user_code": user_code
 }

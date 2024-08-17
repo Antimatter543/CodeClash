@@ -13,17 +13,17 @@ LANGUAGE_IDS = {
 dictthing = {("Python", "listint"): "Problems().lintconverter", ("Python", "liststr"): "Problems().lstrconverter",
              ("Python", "int"): "Problems().intconverter", ("Python", "str"): "Problems().strconverter",
 
-             ("Java", "lintconverter"): "JavaProblems.lintconverter",("Java", "liststr"): "JavaProblems.lstrconverter",
+             ("Java", "listint"): "JavaProblems.lintconverter",("Java", "liststr"): "JavaProblems.lstrconverter",
              ("Java", "int"): "JavaProblems.intconverter",("Java", "str"): "JavaProblems.strconverter",
 
              ("C", "lintconverter"): "CProblems.lintconverter",("C", "liststr"): "CProblems.lstrconverter",
              ("C", "int"): "CProblems.intconverter",("C", "str"): "CProblems.strconverter",}
 dictquestion = {
-    "119": ("getRow", "int"),
-    "287": ("findDuplicate", "listint"),
-    "557": ("reverseWords", "str"),
-    "1048": ("longestStrChain", "liststr"),
-    "1207": ("uniqueOccurrences", "listint"),
+    "119": ("getRow", "int", "int"),
+    "287": ("findDuplicate", "listint", "int[]"),
+    "557": ("reverseWords", "str", "String"),
+    "1048": ("longestStrChain", "liststr", "String[]"),
+    "1207": ("uniqueOccurrences", "listint", "int[]"),
 }
 
 def submit_code_to_judge0(language: str, source_code: str, input_data: str) -> dict:
@@ -48,7 +48,7 @@ def get_reader(language) -> str:
     elif language == "Java":
         file_path = './questions/readers/JavaProblems.java' ## Readers is the reader for language..
     else:
-        print("What are you doing we haven't done this language")
+        print("What are you doing we haven't done this language i gave up no thanks")
         return None
     
     with open(file_path, 'r') as file:
@@ -71,7 +71,24 @@ parsed_input = {dictthing[(language, question_type)]}(inputs)
 sol = Solution()
 print(sol.{func_name}(parsed_input))
     """
-    ### Other code for java etc below
+    elif language == "Java":
+        func_name, question_type, typey = dictquestion[question_number]
+        judge_code = f"""
+    import java.util.*;
+    {parser_lang}
+    public class Main {{
+        {user_code}
+        public static void main(String[] args) {{
+            // Read input using Scanner
+            Scanner scanner = new Scanner(System.in);
+            String inputs = scanner.nextLine();
+            
+            // Parse input using the corresponding converter function
+            {typey} parsed_input = {dictthing[(language, question_type)]}(inputs);
+            System.out.println({func_name}(parsed_input));
+        }}
+    }}
+    """
     return judge_code
 
 
@@ -110,7 +127,17 @@ def run_tests(language: str, judge_code: str, input_data: list, expected_output:
         print("Execution Status:", result.get('status', {}).get('description', 'Unknown'))
 
         # Compare the output to the expected output
-        if result.get('stdout', '').strip() == expected_output[i]:
+        if language == "Java" and expected_output[i] == "True":
+            if result.get('stdout', '').strip() == "true":
+                print("Test PASSED")
+            else:
+                print("Test FAILED")
+        elif language == "Java" and expected_output[i] == "False":
+            if result.get('stdout', '').strip() == "false":
+                print("Test PASSED")
+            else:
+                print("Test FAILED")
+        elif result.get('stdout', '').strip() == expected_output[i]:
             print("Test PASSED")
         else:
             print("Test FAILED")
