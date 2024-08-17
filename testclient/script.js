@@ -52,6 +52,7 @@ function leaveRoom() {
   if (roomCode) {
     socket.emit('leaveRoom', roomCode);
     setRoomCode();
+    console.log('Left room.');
   } else {
     console.log("Not currently in a room.");
   }
