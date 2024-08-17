@@ -1,32 +1,22 @@
-import { useRef } from 'react';
-import ReactDOM from 'react-dom';
-import Editor, { OnMount } from '@monaco-editor/react';
+import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Combat from './pages/combatScreen'
+import Navbar from './customComponents/Navbar'
+import SetupScreen from './pages/SetupScreen';
 
 export default function App() {
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-
-  const handleEditorDidMount: OnMount = (editor, monaco) => {
-    editorRef.current = editor;
-  };
-
-  const showValue = () => {
-    if (editorRef.current) {
-      alert(editorRef.current.getValue());
-    }
-  };
-
-  return (
-    <>
-      <button onClick={showValue}>Show value</button>
-      <Editor
-        height="90vh"
-        defaultLanguage="javascript"
-        defaultValue="// some comment"
-        onMount={handleEditorDidMount}
-      />
-    </>
+  return ( 
+    <Router>
+      <div className='flex flex-col h-screen'>
+        <Navbar/>
+        <div className='overflow-hidden h-full'>
+          <Routes>
+            <Route path="/" element={<SetupScreen/>} />
+            <Route path="/battle" element={<Combat/>} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 
-const rootElement = document.getElementById('root');
-ReactDOM.render(<App />, rootElement);
