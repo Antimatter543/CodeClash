@@ -59,7 +59,7 @@ export default function SetupScreen() {
             return;
         }
         
-        socket.emit('requestCreateRoom');
+        socket.emit('requestCreateRoom', inputuser);
     };
 
     const handleJoinRoom = () => {
