@@ -1,15 +1,8 @@
-.wrapper {
-    display: grid;
-    height: auto; /* Adjust the height to fit the content */
-    width: auto;  /* Adjust the width to fit the content */
-    place-items: center;
-    z-index: 0;
-}
 .element {
     position: fixed;
     display: flex;
     top: 11vh;   
-    right: 5vw;     
+    right: 3vw;     
     width: 250px;
     height: 150px;
     background: #696969;

@@ -30,7 +30,6 @@ export default function CombatScreen({ socket, combat, startTimer }: CombatScree
 
   useEffect(() => {
     socket?.on('startGame', (problem: any) => {
-      console.log(problem)
       setProblem(problem)
       setFightStarted(true);
       setTime(problem.timeLimit);

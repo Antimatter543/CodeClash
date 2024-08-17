@@ -114,8 +114,8 @@ io.on('connect', socket => {
         console.log(room);
   
         if (room.player1.connected && room.player2.connected) {
-            socket.to(room.player1.id).emit('playersJoinedRoom', true);
-            socket.to(room.player2.id).emit('playersJoinedRoom', true);
+            io.to(room.player1.id).emit('playersJoinedRoom', true, room.player2.name);
+            io.to(room.player2.id).emit('playersJoinedRoom', true, room.player1.name);
             console.log(`Both players have joined room ${roomCode}.`);
             console.log(room);
         }
@@ -186,8 +186,8 @@ io.on('connect', socket => {
     const problem = problems[currentProblemNumber];
     const room = rooms[roomCode[0]]
     if (currentProblemNumber === 0) {
-      socket.to(room.player1.id).emit('startGame', problem)
-      socket.to(room.player2.id).emit('startGame', problem)
+      io.to(room.player1.id).emit('startGame', problem)
+      io.to(room.player2.id).emit('startGame', problem)
     } else {
       socket.emit('nextProblem', problem); // problem object formatted
     }

@@ -66,14 +66,14 @@ export default function IDE({ playerType, socket }: IDEProps) {
 
   return (
     <Editor
-      height="90vh"
-      defaultLanguage="javascript"
-      defaultValue="// some comment"
-      onMount={handleEditorDidMount}
-      options={{
-        readOnly: false,
-        minimap: { enabled: false },
-      }}
+        height="90vh"
+        defaultLanguage="javascript"
+        defaultValue="// some comment"
+        onMount={handleEditorDidMount}
+        options={{
+            readOnly: false,
+            minimap: { enabled: false },
+        }}
     />
   );
 }
