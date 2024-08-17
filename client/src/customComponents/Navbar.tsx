@@ -7,10 +7,6 @@ export default function Navbar() {
     const location = useLocation();
     const { socket } = useSocket()
 
-    if (socket) {
-        console.log(socket.id)
-
-    }
     return (
         <div className="flex justify-between w-full border-b-[1px] border-neutral-200 font-inter px-10 py-5">
             <h1 className="text-[1.5rem]">

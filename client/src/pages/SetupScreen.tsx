@@ -12,18 +12,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import Github from '../assets/svg/svg';
-import { useSocket } from "@/context/SocketContext";
+// import { useSocket } from "@/context/SocketContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { io } from 'socket.io-client';
 
 export default function SetupScreen() {
-    const { setRoomCode, socket, setUsername } = useSocket();
+    // const { setRoomCode, socket, setUsername } = useSocket();
     const [inputuser, setInputUsername] = useState('');
     const [inputRoomCode, setInputRoomCode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    
+    const socket = io('http://localhost:3000');
+
+    socket.on('connect', () => {
+        console.log("connected to server with id", socket.id);
+    });
 
     useEffect(() => {
+
+        setInputRoomCode(localStorage.getItem('roomCode') || '');
+        setInputUsername(localStorage.getItem('username') || '');
+
         socket?.on('confirmCreateRoom', (roomCode) => {
             setInputRoomCode(roomCode);
             console.log(socket.id);
@@ -37,11 +48,12 @@ export default function SetupScreen() {
 
         socket?.on('playersJoinedRoom', (roomCode) => {
             console.log("All players joined. Going to battle page");
-            setRoomCode(inputRoomCode);
-            setUsername(inputuser);
+            localStorage.setItem('username', inputuser);
+            localStorage.setItem('roomCode', inputRoomCode);
             navigate('/battle');
-        })
+        });
     }, []);
+    
 
     const handleCreateRoom = () => {
         if (!socket) {
@@ -53,7 +65,6 @@ export default function SetupScreen() {
             return;
         }
         
-        setUsername(inputuser);
         console.log("requestCreateRoom");
         socket.emit('requestCreateRoom');
     }
@@ -72,13 +83,9 @@ export default function SetupScreen() {
             return;
         }
         
-        setUsername(inputuser);
         socket.emit('requestJoinRoom', inputuser, inputRoomCode);
         
         // Store username and room code in local storage
-        localStorage.setItem('username', inputuser);
-        localStorage.setItem('roomCode', inputRoomCode);
-
         
         setErrorMessage('');
     };
