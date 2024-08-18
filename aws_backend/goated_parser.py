@@ -20,7 +20,7 @@ dictthing = {("Python", "listint"): "Problems().lintconverter", ("Python", "list
              ("C", "int"): "CProblems.intconverter",("C", "str"): "CProblems.strconverter",}
 dictquestion = {
     "119": ("getRow", "int", "int"),
-    "287": ("findDuplicate", "listint", "int[]"),
+    "287": ("findDuplicate", "listint", "int"),
     "557": ("reverseWords", "str", "String"),
     "1048": ("longestStrChain", "liststr", "String[]"),
     "1207": ("uniqueOccurrences", "listint", "int[]"),
