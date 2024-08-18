@@ -79,7 +79,7 @@ export default function IDE({ playerType, socket, language, selectedLanguage }: 
   };
 
   return (
-    <div className='relative'>
+    <div className='relative w-full'>
       <Editor
         height="90vh"
         language={selectedLanguage.toLowerCase()}
