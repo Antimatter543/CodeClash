@@ -31,7 +31,7 @@ export default function SetupScreen() {
 
     const [socket, setSocket] = useState<Socket | null>(null);
     const [formattedTime, setFormattedTime] = useState('00:00');
-
+    const [selectedLanguage, setSelectedLanguage] = useState<"Python" | "Java">("Python");
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
         e.preventDefault();
         setShowRefreshDialog(true);
@@ -126,7 +126,11 @@ export default function SetupScreen() {
 
     return (
         <div className="h-full">
-            <Navbar combat={combat} time={formattedTime}/>
+            <Navbar combat={combat} time={formattedTime} onLanguageChange={(newLanguage: string) => {
+                if (newLanguage === "Python" || newLanguage === "Java") {
+                    setSelectedLanguage(newLanguage);
+                }
+            }}/>
             {!ready &&
                 <div className="font-inter w-full h-[65%] flex flex-col justify-center items-center gap-[4rem]">
                     <section className="text-center">
@@ -193,7 +197,7 @@ export default function SetupScreen() {
                     </div>
                 </div>
             }
-            {ready && <CombatScreen combat={combat} socket={socket} startTimer={handleTimeUpdate}/>}
+            {ready && <CombatScreen combat={combat} socket={socket} startTimer={handleTimeUpdate} selectedLanguage={selectedLanguage}/>}
             
             {/* Dialog for refresh confirmation */}
             {showRefreshDialog && (
