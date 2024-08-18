@@ -24,7 +24,7 @@ export default function IDE({ playerType, socket }: IDEProps) {
   const [sabotagePoints, setSabotagePoints] = useState(10);
   const [shortcutsDisabled, setShortcutsDisabled] = useState(false);
   const [shortcutsCooldown, setShortcutsCooldown] = useState(0);
-  const [arrowKeysReversed, setArrowKeysReversed] = useState(true);
+  const [arrowKeysReversed, setArrowKeysReversed] = useState(false);
   const [arrowKeysCooldown, setArrowKeysCooldown] = useState(0);
   const [mouseDisabled, setMouseDisabled] = useState(true);
   const [mouseCooldown, setMouseCooldown] = useState(0);
