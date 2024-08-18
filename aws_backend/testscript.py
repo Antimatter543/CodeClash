@@ -12,8 +12,8 @@ else:
     API_URL = f"http://{EC2_IP}:5000/submit-code"
 
 
-QUESTION_NUMBER = "287"
-USER_CODE_FILE = f"./questions/solutions/Python/{QUESTION_NUMBER}.py"
+QUESTION_NUMBER = "119"
+USER_CODE_FILE = f"./questions/solutions/Java/{QUESTION_NUMBER}.java"
 
 # Read user code from file
 with open(USER_CODE_FILE, 'r') as file:
@@ -22,7 +22,7 @@ with open(USER_CODE_FILE, 'r') as file:
 print(user_code)
 # Prepare the data to be sent in the POST request
 data = {
-    "language": "Python",
+    "language": "Java",
     "question_number": f"{QUESTION_NUMBER}",
     "user_code": user_code
 }
