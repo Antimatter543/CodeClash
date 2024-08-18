@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import requests
 from goated_parser import LANGUAGE_IDS, dictquestion, get_reader, get_judge_code, read_input_file, run_tests, submit_code_to_judge0
 
 app = Flask(__name__)
-
+CORS(app)  # Enable CORS for all routes
 
 def run_test_cases(language: str, question_number: str, user_code: str) -> list:
     """Run all test cases for a given question and return the results."""
