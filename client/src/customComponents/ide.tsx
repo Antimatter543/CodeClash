@@ -72,12 +72,14 @@ export default function IDE({ playerType, socket, language, selectedLanguage }: 
     }
   };
 
+  console.log(language[selectedLanguage])
+
   return (
     <div className='relative'>
       <Editor
         height="90vh"
         language={selectedLanguage.toLowerCase()}
-        defaultValue={language[selectedLanguage]}
+        defaultValue={language[0][selectedLanguage]}
         onMount={handleEditorDidMount}
         options={{
           readOnly: false,

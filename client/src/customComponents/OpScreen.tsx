@@ -5,7 +5,6 @@ import { X } from "lucide-react";
 import IDE from "./ide";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Socket } from 'socket.io-client';
-
 interface OpScreenProps {
     socket: Socket | null;
     language: { [key: string]: string; };

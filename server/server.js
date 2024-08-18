@@ -16,7 +16,7 @@ const rooms = {};
 var problems;
 
 async function importProblems() {
-  const requestURL = 'https://raw.githubusercontent.com/Antimatter543/CodeClash/main/questions/questions.json';
+  const requestURL = 'https://raw.githubusercontent.com/Antimatter543/CodeClash/UI-rooms/questions/questions.json';
   const request = new Request(requestURL);
 
   const response = await fetch(request);
@@ -156,13 +156,13 @@ io.on('connect', socket => {
 
   // player edits own code
   socket.on('sendOwnEdit', (roomCode, username, editType, index, length, text) => {
-    opponentSocket(roomCode[0], username[0]).emit("receiveOpponentCodeEdit", editType, index, length, text);
+    opponentSocket(roomCode, username).emit("receiveOpponentCodeEdit", editType, index, length, text);
     //console.log("playeredited")
   });
 
   // player edits opponents code
   socket.on('sendOpponentEdit', (roomCode, username, editType, index, length, text) => {
-    opponentSocket(roomCode[0], username[0]).emit("receiveOwnCodeEdit", editType, index, length, text);
+    opponentSocket(roomCode, username).emit("receiveOwnCodeEdit", editType, index, length, text);
     //console.log("openenedited code")
   });
 
