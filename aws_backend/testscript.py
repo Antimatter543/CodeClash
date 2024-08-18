@@ -1,7 +1,16 @@
 import requests
-
+from constants import * 
 # Configuration
-API_URL = "http://127.0.0.1:5000/submit-code"
+
+#### THIS SENDS REQUESTS TO APP.PY HOSTED ON THE EC2 INSTANCE, NOT THE ACTUAL JUDGE THING!!!
+
+
+LOCAL = True
+if LOCAL:
+    API_URL = "http://127.0.0.1:5000/submit-code"
+else:
+    API_URL = f"http://{EC2_IP}:5000/submit-code"
+
 USER_CODE_FILE = "./questions/solutions/Java/1207.java"
 
 # Read user code from file

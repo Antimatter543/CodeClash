@@ -1,7 +1,7 @@
 import requests
 
+from constants import *
 # Judge0 API URL
-JUDGE0_API_URL = "http://3.26.186.241:2358/submissions/?base64_encoded=false&wait=true"
 LANGUAGE_ID = 71  # Python 3.8.1
 
 
@@ -60,7 +60,7 @@ def get_reader(language) -> str:
 def get_judge_code(language: str, user_code: str, parser_lang: str, question_number):
     
     if language == "Python":
-        func_name, question_type = dictquestion[question_number]
+        func_name, question_type, _ = dictquestion[question_number]
         judge_code = f"""
 {user_code} \n
 {parser_lang} \n
@@ -127,17 +127,8 @@ def run_tests(language: str, judge_code: str, input_data: list, expected_output:
         print("Execution Status:", result.get('status', {}).get('description', 'Unknown'))
 
         # Compare the output to the expected output
-        if language == "Java" and expected_output[i] == "True":
-            if result.get('stdout', '').strip() == "true":
-                print("Test PASSED")
-            else:
-                print("Test FAILED")
-        elif language == "Java" and expected_output[i] == "False":
-            if result.get('stdout', '').strip() == "false":
-                print("Test PASSED")
-            else:
-                print("Test FAILED")
-        elif result.get('stdout', '').strip() == expected_output[i]:
+        
+        if result.get('stdout', '').strip() == expected_output[i]:
             print("Test PASSED")
         else:
             print("Test FAILED")
