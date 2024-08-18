@@ -38,7 +38,7 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
   const [time, setTime] = useState(0);
   const [roomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
   const [consoleData, setConsoleData] = useState(null);
-  const [sabotagePoints, setSabotagePoints] = useState(0)
+  const [sabotagePoints, setSabotagePoints] = useState(10)
 
   const handleStartFight = () => {
     if (combat) {
