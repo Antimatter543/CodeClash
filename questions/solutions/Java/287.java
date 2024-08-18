@@ -1,4 +1,4 @@
-public static int findDuplicate(List<Integer> nums) {
+public static int findDuplicate(int[] nums) {
     int slow = nums[nums[0]];
     int fast = nums[nums[nums[0]]];
 
