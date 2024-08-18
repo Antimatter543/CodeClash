@@ -79,7 +79,7 @@ export default function IDE({ playerType, socket, language, selectedLanguage }: 
       <Editor
         height="90vh"
         language={selectedLanguage.toLowerCase()}
-        defaultValue={language[0][selectedLanguage]}
+        value={language[0][selectedLanguage]}
         onMount={handleEditorDidMount}
         options={{
           readOnly: false,
