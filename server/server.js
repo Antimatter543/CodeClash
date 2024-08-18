@@ -42,9 +42,9 @@ io.on('connect', socket => {
   console.log("New client:", socket.id);
 
   function opponentSocket(roomCode, username) {
-    console.log("opponentSocket()", roomCode, username);
+    //console.log("opponentSocket()", roomCode, username);
     const room = rooms[roomCode];
-    console.log(room)
+    //console.log(room)
     if (room.player1.name === username) {
       return io.to(room.player2.id);
     } else {
@@ -66,7 +66,7 @@ io.on('connect', socket => {
         id: "",
       }, 
     };
-    console.log("Created room with code", roomCode);
+    //console.log("Created room with code", roomCode);
     listRoomMembers()
     socket.emit("confirmCreateRoom", true, roomCode, username);
   });
@@ -75,9 +75,9 @@ io.on('connect', socket => {
     console.log("Listing all room members:");
     for (const roomCode in rooms) {
       const room = rooms[roomCode];
-      console.log(`Room Code: ${roomCode}`);
-      console.log(`  Player 1: ${room.player1.name}, Connected: ${room.player1.connected}`);
-      console.log(`  Player 2: ${room.player2.name}, Connected: ${room.player2.connected}`);
+      //console.log(`Room Code: ${roomCode}`);
+      //console.log(`  Player 1: ${room.player1.name}, Connected: ${room.player1.connected}`);
+      //console.log(`  Player 2: ${room.player2.name}, Connected: ${room.player2.connected}`);
     }
   }
   
@@ -86,41 +86,41 @@ io.on('connect', socket => {
 
   socket.on('requestJoinRoom', (roomCode, username) => {
     roomCode = roomCode.toUpperCase();
-    console.log(`User ${username} is attempting to join room ${roomCode}`);
+    //console.log(`User ${username} is attempting to join room ${roomCode}`);
   
     if (rooms.hasOwnProperty(roomCode)) {
         let room = rooms[roomCode];
-        console.log(`Room ${roomCode} found. Current state:`, room);
+        //console.log(`Room ${roomCode} found. Current state:`, room);
   
         if (!room.player1.connected) { // join as player 1
             rooms[roomCode].player1.connected = true; 
             rooms[roomCode].player1.id = socket.id;
             rooms[roomCode].player1.name = username;
-            console.log(`${username} joined room ${roomCode} as player 1. Player 1 ID: ${socket.id}`);
+            //console.log(`${username} joined room ${roomCode} as player 1. Player 1 ID: ${socket.id}`);
         } else if (!room.player2.connected) { // join as player 2
             rooms[roomCode].player2.connected = true; 
             rooms[roomCode].player2.id = socket.id;
             rooms[roomCode].player2.name = username;
-            console.log(`${username} joined room ${roomCode} as player 2. Player 2 ID: ${socket.id}`);
+            //console.log(`${username} joined room ${roomCode} as player 2. Player 2 ID: ${socket.id}`);
         } else {
-            console.log(`Room ${roomCode} is full. User ${username} cannot join.`);
+            //console.log(`Room ${roomCode} is full. User ${username} cannot join.`);
             socket.emit('joinRoom', false, roomCode); // room is full
             return;
         }
       
         socket.join(roomCode);
         socket.emit('confirmJoin', true, roomCode, username); // Emit success message
-        console.log(`User ${username} successfully joined room ${roomCode}.`);
-        console.log(room);
+        //console.log(`User ${username} successfully joined room ${roomCode}.`);
+        //console.log(room);
   
         if (room.player1.connected && room.player2.connected) {
             io.to(room.player1.id).emit('playersJoinedRoom', true, room.player2.name);
             io.to(room.player2.id).emit('playersJoinedRoom', true, room.player1.name);
-            console.log(`Both players have joined room ${roomCode}.`);
-            console.log(room);
+            //console.log(`Both players have joined room ${roomCode}.`);
+            //console.log(room);
         }
     } else {
-        console.log(`Room ${roomCode} does not exist. User ${username} cannot join.`);
+        //console.log(`Room ${roomCode} does not exist. User ${username} cannot join.`);
         socket.emit('joinRoom', false, roomCode); // no such room
     }
 });
@@ -157,13 +157,13 @@ io.on('connect', socket => {
   // player edits own code
   socket.on('sendOwnEdit', (roomCode, username, editType, index, length, text) => {
     opponentSocket(roomCode[0], username[0]).emit("receiveOpponentCodeEdit", editType, index, length, text);
-    console.log("playeredited")
+    //console.log("playeredited")
   });
 
   // player edits opponents code
   socket.on('sendOpponentEdit', (roomCode, username, editType, index, length, text) => {
     opponentSocket(roomCode[0], username[0]).emit("receiveOwnCodeEdit", editType, index, length, text);
-    console.log("openenedited code")
+    //console.log("openenedited code")
   });
 
   // player submits code

@@ -11,10 +11,16 @@ import Console from '@/customComponents/Console';
 import OpScreen from '@/customComponents/OpScreen';
 import { Button } from '@/components/ui/button';
 
+const LanguageType = {
+  python: "Python",
+  java: "Java",
+} as const;
+
 interface CombatScreenProp {
   socket: Socket | null;
   combat: boolean;
   startTimer: (time: number) => void;
+  selectedLanguage: keyof typeof LanguageType;
 }
 
 interface Problem {
@@ -23,10 +29,10 @@ interface Problem {
   examples: Array<{ input: string; output: string }>;
   constraints: string[];
   timeLimit: number;
-  language: { [key: string]: string }; // Adjust this based on the actual structure
+  language: { [key: string]: string };
 }
 
-export default function CombatScreen({ socket, combat, startTimer }: CombatScreenProp) {
+export default function CombatScreen({ socket, combat, startTimer, selectedLanguage }: CombatScreenProp) {
   const [fightStarted, setFightStarted] = useState(false);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [time, setTime] = useState(0);
@@ -98,7 +104,7 @@ export default function CombatScreen({ socket, combat, startTimer }: CombatScree
       {problem &&
         <div>
           <div className='fixed right-10 top-[10vh] z-[20]'>
-            <OpScreen socket={socket}/>
+            <OpScreen socket={socket} language={problem.language} selectedLanguage={selectedLanguage}/>
           </div>
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={30} minSize={20}>
@@ -108,7 +114,7 @@ export default function CombatScreen({ socket, combat, startTimer }: CombatScree
             <ResizablePanel>
               <ResizablePanelGroup direction="vertical">
                 <ResizablePanel>
-                  <IDE playerType="self" socket={socket}/>
+                  <IDE playerType="self" socket={socket} language={problem.language} selectedLanguage={selectedLanguage}/>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize={20} minSize={20} maxSize={50}>

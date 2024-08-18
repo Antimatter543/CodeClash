@@ -20,6 +20,8 @@ import javawebp from '../assets/webp/java.webp'
 import jswebp from '../assets/webp/js.webp'
 import cppwebp from '../assets/webp/c++.webp'
 
+type Language = 'python' | 'java';
+
 export default function SetupScreen() {
     const [inputuser, setInputUsername] = useState('');
     const [inputRoomCode, setInputRoomCode] = useState('');
@@ -31,6 +33,7 @@ export default function SetupScreen() {
 
     const [socket, setSocket] = useState<Socket | null>(null);
     const [formattedTime, setFormattedTime] = useState('00:00');
+    const [language, setLanguage] = useState<Language>('python');
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
         e.preventDefault();
@@ -126,7 +129,7 @@ export default function SetupScreen() {
 
     return (
         <div className="h-full">
-            <Navbar combat={combat} time={formattedTime}/>
+            <Navbar combat={combat} time={formattedTime} onLanguageChange={setLanguage}/>
             {!ready &&
                 <div className="font-inter w-full h-[65%] flex flex-col justify-center items-center gap-[4rem]">
                     <section className="text-center">
@@ -193,7 +196,7 @@ export default function SetupScreen() {
                     </div>
                 </div>
             }
-            {ready && <CombatScreen combat={combat} socket={socket} startTimer={handleTimeUpdate}/>}
+            {ready && <CombatScreen combat={combat} socket={socket} startTimer={handleTimeUpdate} selectedLanguage={language}/>}
             
             {/* Dialog for refresh confirmation */}
             {showRefreshDialog && (

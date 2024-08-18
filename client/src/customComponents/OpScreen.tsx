@@ -5,11 +5,19 @@ import { X } from "lucide-react";
 import IDE from "./ide";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Socket } from 'socket.io-client';
+
+const LanguageType = {
+    python: "Python",
+    java: "Java",
+  } as const;
+
 interface OpScreenProps {
     socket: Socket | null;
+    language: { [key: string]: string; };
+    selectedLanguage: keyof typeof LanguageType;
 }
 
-export default function OpScreen({ socket }: OpScreenProps) {
+export default function OpScreen({ socket, language, selectedLanguage }: OpScreenProps) {
     const [open, setOpen] = useState(false);
     const shortcutPressed = useShortCut("k", "metaKey");
     const opponent = useState<string>(() => localStorage.getItem('opponent') || '');
@@ -45,7 +53,7 @@ export default function OpScreen({ socket }: OpScreenProps) {
                 }}
                 layout
             >
-                <IDE playerType="opponent" socket={socket}/>
+                <IDE playerType="opponent" socket={socket} language={language} selectedLanguage={selectedLanguage}/>
                 {(!open && opponent) && (
                     <div className="absolute inset-0 bg-black/20 flex justify-center items-center z-10 backdrop-blur-sm">
                         <Avatar className="size-[3.5rem]">
