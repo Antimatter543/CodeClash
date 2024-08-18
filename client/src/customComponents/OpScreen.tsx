@@ -16,9 +16,12 @@ interface OpScreenProps {
     socket: Socket | null;
     language: LanguageArray;
     selectedLanguage: "Python" | "Java";
+    question: string | undefined
+    sabotagePoints: number
+    setSabotagePoints: any
 }
 
-export default function OpScreen({ socket, language, selectedLanguage }: OpScreenProps) {
+export default function OpScreen({ socket, language, selectedLanguage, question, sabotagePoints, setSabotagePoints}: OpScreenProps) {
     const [open, setOpen] = useState(false);
     const shortcutPressed = useShortCut("k", "metaKey");
     const opponent = useState<string>(() => localStorage.getItem('opponent') || '');
@@ -54,7 +57,15 @@ export default function OpScreen({ socket, language, selectedLanguage }: OpScree
                 }}
                 layout
             >
-                <IDE playerType="opponent" socket={socket} language={language} selectedLanguage={selectedLanguage}/>
+                <IDE 
+                    playerType="opponent" 
+                    socket={socket} 
+                    language={language} 
+                    selectedLanguage={selectedLanguage} 
+                    question={question} 
+                    setConsoleData={null} 
+                    sabotagePoints={sabotagePoints}
+                    setSabotagePoints={setSabotagePoints}/>
                 {(!open && opponent) && (
                     <div className="absolute inset-0 bg-black/20 flex justify-center items-center z-10 backdrop-blur-sm">
                         <Avatar className="size-[3.5rem]">
@@ -64,15 +75,19 @@ export default function OpScreen({ socket, language, selectedLanguage }: OpScree
                     </div>
                 )}
                 {open && (
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setOpen(false);
-                        }}
-                        className="absolute top-3 right-3 bg-black/20 rounded-full p-2"
-                    >
-                        <X className="size-4" />
-                    </button>
+                    <div>
+                        <p className="absolute bottom-2 right-5 text-black font-inter text-center text-[1.5rem]">RAM left: {sabotagePoints}</p>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setOpen(false);
+                            }}
+                            className="absolute top-3 right-3 bg-black/20 rounded-full p-2"
+                        >
+                            <X className="size-4" />
+                        </button>
+                    </div>
+                    
                 )}
             </motion.div>
         </div>
