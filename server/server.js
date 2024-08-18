@@ -15,8 +15,6 @@ const io = require('socket.io')(server, {
 });
 
 var problems;
-// var problemIds = [76, 119, 287, 557, 1048];
-const problemIds = ["76", "119", "287", "557", "1048"];
 
 app.get('/', async (req, res, next) => {
   res.sendFile('index.html');
@@ -57,7 +55,7 @@ io.on('connect', socket => {
   function opponentSocket(roomCode, username) {
     console.log("opponentSocket()", roomCode, username);
     const room = rooms[roomCode];
-    console.log(room)
+    // console.log(room)
     if (room.player1.name === username) {
       return io.to(room.player2.id);
     } else {

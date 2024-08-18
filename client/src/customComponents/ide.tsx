@@ -21,23 +21,12 @@ export default function IDE({ playerType, socket }: IDEProps) {
   const roomCode = useState<string>(() => localStorage.getItem('roomCode') || '');
   const username = useState<string>(() => localStorage.getItem('username') || '');
 
-  const [sabotagePoints, setSabotagePoints] = useState(10);
-  const [shortcutsDisabled, setShortcutsDisabled] = useState(false);
-  const [shortcutsCooldown, setShortcutsCooldown] = useState(0);
-  const [arrowKeysReversed, setArrowKeysReversed] = useState(false);
-  const [arrowKeysCooldown, setArrowKeysCooldown] = useState(0);
-  const [mouseDisabled, setMouseDisabled] = useState(true);
-  const [mouseCooldown, setMouseCooldown] = useState(0);
-  const [prevCursorPosition, setPrevCursorPosition] = useState([1, 1]);
-
+  const [sabotagePoints, setSabotagePoints] = useState(20);
+ 
   const sendOpponentEditCost = 1;
 
   const pointsRef = useRef<number>();
   pointsRef.current = sabotagePoints;
-  const prevCursorPosRef = useRef<number[]>();
-  prevCursorPosRef.current = prevCursorPosition;
-  const arrowKeysReversedRef = useRef<boolean>();
-  arrowKeysReversedRef.current = arrowKeysReversed;
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
@@ -112,33 +101,10 @@ export default function IDE({ playerType, socket }: IDEProps) {
         }
       });
   
-      // socket?.on('triggerReverseArrowKeys', (username: string) => {
-      //   setArrowKeysReversed(true);
-      //   setArrowKeysCooldown(60);
-      //   console.log(username, "disabled your arrow keys!");
-      // });
-
       socket.on('triggerCodeSwap', (username: string) => {
 
       });
     }
-
-    // editorRef.current.onDidChangeCursorPosition((e) => {
-    //   if (playerType === PlayerType.self) {
-    //     console.log(JSON.stringify(e));
-    //     const lineNumber = e.position.lineNumber;
-    //     const column = e.position.column;
-    //     if (e.source === "keyboard") {
-    //       if (arrowKeysReversedRef.current) {
-    //         editorRef.current.setPosition({
-    //           lineNumber: lineNumber + (lineNumber - prevCursorPosRef.current[0]) * -2, 
-    //           column: column + (column - prevCursorPosRef.current[1]) * -2,
-    //         });
-    //       }
-    //     }
-    //     setPrevCursorPosition([lineNumber, column]);
-    //   }
-    // });
   };
 
   
@@ -157,18 +123,6 @@ export default function IDE({ playerType, socket }: IDEProps) {
   useEffect(() => {
     console.log("sabotagePoints remaining", pointsRef.current);
   }, [sabotagePoints]);
-
-  useEffect(() => {
-    if (playerType === PlayerType.self) {
-      if (mouseDisabled) {
-        // lock the pointer
-      } else {
-        // document.exitPointerLock();
-      }
-    }
-  }, [mouseDisabled]);
-
-
 
   return (
     <Editor
