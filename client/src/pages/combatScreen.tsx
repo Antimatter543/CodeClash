@@ -38,6 +38,7 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
   const [time, setTime] = useState(0);
   const [roomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
   const [consoleData, setConsoleData] = useState(null);
+  const [sabotagePoints, setSabotagePoints] = useState(0)
 
   const handleStartFight = () => {
     if (combat) {
@@ -108,7 +109,7 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
       {problem &&
         <div>
           <div className='fixed right-10 top-[10vh] z-[20]'>
-            <OpScreen socket={socket} language={problem.language} selectedLanguage={selectedLanguage} question={question}/>
+            <OpScreen socket={socket} language={problem.language} selectedLanguage={selectedLanguage} question={question} sabotagePoints={sabotagePoints} setSabotagePoints={setSabotagePoints}/>
           </div>
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={30} minSize={20}>
@@ -124,6 +125,8 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
                     selectedLanguage={selectedLanguage} 
                     question={question}
                     setConsoleData={setConsoleData}
+                    setSabotagePoints={setSabotagePoints}
+                    sabotagePoints={sabotagePoints}
                   />
                 </ResizablePanel>
                 <ResizableHandle withHandle />

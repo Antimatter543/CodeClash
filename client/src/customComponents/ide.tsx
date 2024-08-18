@@ -6,6 +6,7 @@ import { Socket } from 'socket.io-client';
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
 
+
 // Enum for player types
 const PlayerType = {
   self: "self",
@@ -24,16 +25,20 @@ interface IDEProps {
   selectedLanguage: "Python" | "Java";
   question: string | undefined;
   setConsoleData: any
+  setSabotagePoints: any
+  sabotagePoints: number
 }
 
-export default function IDE({ playerType, socket, language, selectedLanguage, question, setConsoleData }: IDEProps) {
+export default function IDE({ playerType, socket, language, selectedLanguage, question, setConsoleData, sabotagePoints, setSabotagePoints }: IDEProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [roomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
   const [username] = useState<string>(() => localStorage.getItem('username') || '');
   const [loading, setLoading] = useState(false);
+ 
+  const sendOpponentEditCost = 1;
 
-  const sender = playerType === PlayerType.self ? "sendOwnEdit" : "sendOpponentEdit";
-  const receiver = playerType === PlayerType.self ? "receiveOwnCodeEdit" : "receiveOpponentCodeEdit";
+  const pointsRef = useRef<number>();
+  pointsRef.current = sabotagePoints;
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
@@ -41,26 +46,60 @@ export default function IDE({ playerType, socket, language, selectedLanguage, qu
     // Initialize Editor Content Manager
     const contentManager = new MonacoCollabExt.EditorContentManager({
       editor: editor,
-      onInsert(index, text) {
+      onInsert(index, text) { // when user types
         if (socket && roomCode && username) {
-          socket.emit(sender, roomCode, username, "Insert", index, 0, text);
+          if (playerType === PlayerType.self) {
+            socket.emit('sendOwnEdit', roomCode, username, "Insert", index, 0, text);
+          } else {
+            if (text.length * sendOpponentEditCost <= pointsRef.current) {
+              socket.emit('sendOpponentEdit', roomCode, username, "Insert", index, 0, text);
+              setSabotagePoints(pointsRef.current - (text.length * sendOpponentEditCost));
+              // console.log("onInsert() remaining sabotage points:", pointsRef.current);
+            } else {
+              console.log("Not enough RAM for this edit!");
+              editor.trigger("keyboard", "undo", null);
+            }
+          }
         }
       },
       onReplace(index, length, text) {
         if (socket && roomCode && username) {
-          socket.emit(sender, roomCode, username, "Replace", index, length, text);
+          if (playerType === PlayerType.self) {
+            socket.emit('sendOwnEdit', roomCode, username, "Replace", index, length, text);
+          } else {
+            if (text.length * sendOpponentEditCost <= pointsRef.current && length * sendOpponentEditCost <= pointsRef.current) {
+              socket.emit('sendOpponentEdit', roomCode, username, "Replace", index, length, text);
+              setSabotagePoints(pointsRef.current - (Math.max(text.length, length) * sendOpponentEditCost));
+              // console.log("onReplace() remaining sabotage points:", pointsRef.current);
+            } else {
+              console.log("Not enough RAM for this edit!");
+              editor.trigger("keyboard", "undo", null);
+            }
+          }
         }
       },
       onDelete(index, length) {
         if (socket && roomCode && username) {
-          socket.emit(sender, roomCode, username, "Delete", index, length, "");
+          if (playerType === PlayerType.self) {
+            socket.emit('sendOwnEdit', roomCode, username, "Delete", index, length, "");
+          } else {
+            if (length * sendOpponentEditCost <= pointsRef.current) {
+              socket.emit('sendOpponentEdit', roomCode, username, "Delete", index, length, "");
+              setSabotagePoints(pointsRef.current - (length * sendOpponentEditCost));
+              // console.log("onDelete() remaining sabotage points:", pointsRef.current);
+            } else {
+              console.log("Not enough RAM for this edit!");
+              editor.trigger("keyboard", "undo", null);
+            }
+          }
         }
       },
     });
 
-    // Listen for incoming edits
+    // socket listeners
     if (socket && roomCode && username) {
-      const handleEdit = (editType: string, index: number, length: number, text: string) => {
+      const receiver = playerType === PlayerType.self ? "receiveOwnCodeEdit" : "receiveOpponentCodeEdit";
+      socket.on(receiver, (editType, index, length, text) => {
         switch (editType) {
           case "Insert":
             contentManager.insert(index, text);
@@ -72,14 +111,11 @@ export default function IDE({ playerType, socket, language, selectedLanguage, qu
             contentManager.delete(index, length);
             break;
         }
-      };
+      });
+  
+      socket.on('triggerCodeSwap', (username: string) => {
 
-      socket.on(receiver, handleEdit);
-
-      // Cleanup event listener on component unmount
-      return () => {
-        socket.off(receiver, handleEdit);
-      };
+      });
     }
   };
 

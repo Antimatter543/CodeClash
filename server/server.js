@@ -1,19 +1,30 @@
-const io = require('socket.io')(3000, {
+const { spawnSync } = require('child_process');
+const { readFile } = require('fs/promises');
+const { appendFile } = require('fs/promises');
+const { join } = require('path');
+
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+
+const port = process.env.PORT || 3000;
+const io = require('socket.io')(server, {
   cors: {
     origin: ['http://localhost:5173', 'http://localhost:5174']
   }
 });
 
-const rooms = {};
-// FOUR_CHAR_ROOM_CODE = {
-//   player1.connected, 
-//   player1.name, 
-//   player1.id, 
-//   player2.connected, 
-//   player2.name, 
-//   player2.id, 
-// }
 var problems;
+
+app.get('/', async (req, res, next) => {
+  res.sendFile('index.html');
+});
+
+server.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
+
+const rooms = {};
 
 async function importProblems() {
   const requestURL = 'https://raw.githubusercontent.com/Antimatter543/CodeClash/UI-rooms/questions/questions.json';
@@ -22,7 +33,7 @@ async function importProblems() {
   const response = await fetch(request);
   problems = await response.json();
 
-  //console.log("Problems:", problems);
+  console.log("problems[0]:", problems[0]);
 }
 
 importProblems();
@@ -44,7 +55,7 @@ io.on('connect', socket => {
   function opponentSocket(roomCode, username) {
     //console.log("opponentSocket()", roomCode, username);
     const room = rooms[roomCode];
-    //console.log(room)
+    // console.log(room)
     if (room.player1.name === username) {
       return io.to(room.player2.id);
     } else {
@@ -156,31 +167,34 @@ io.on('connect', socket => {
 
   // player edits own code
   socket.on('sendOwnEdit', (roomCode, username, editType, index, length, text) => {
-    opponentSocket(roomCode, username).emit("receiveOpponentCodeEdit", editType, index, length, text);
-    //console.log("playeredited")
-  });
-
-  // player edits opponents code
-  socket.on('sendOpponentEdit', (roomCode, username, editType, index, length, text) => {
-    opponentSocket(roomCode, username).emit("receiveOwnCodeEdit", editType, index, length, text);
-    //console.log("openenedited code")
+    opponentSocket(roomCode[0], username[0]).emit("receiveOpponentCodeEdit", editType, index, length, text);
+    console.log(`Room ${roomCode}: ${username} edited own code`);
   });
 
   // player submits code
-  // problem number is 
+  // problem number is which question the user is up to, not leetcode id
   socket.on('submitCode', (roomCode, username, problemNumber, code, language) => {
     const room = rooms[roomCode];
-    // code testing
+    
+    submitCode(roomCode, username, problemNumber - 1, code, language);
+  });
 
-    socket.emit('codeTestResults', consoleOutput, [test1Passed, test2Passed, test3Passed]);
+  function sendResults(roomCode, username, result) {
+    const room = rooms[roomCode];
+    const target = room.player1.name == username ? room.player1.id : room.player2.id;
+    io.to(target).emit('receiveTestResults', result);
+  }
 
-    let points;
-    // update scoreboard
-    if (passed) {
-      socket.emit('receiveGamePoints', points, powerupPower);
-      opponentSocket().emit('receiveScoreboard', room.scoreBoard);
-    }
-  });  
+  // sends request to python server
+  async function submitCode(roomCode, username, problemNumber, code, language) {
+    const requestURL = pythonAPIURL;
+    const request = new Request(requestURL);
+
+    const response = await fetch(request);
+    const result = await response.json();
+
+    sendResults(roomCode, username, result);
+  }
 
   socket.on('requestProblem', (currentProblemNumber, roomCode) => { // send 0 as current problem number to start 
     const problem = problems[currentProblemNumber];
@@ -194,10 +208,40 @@ io.on('connect', socket => {
     }
   });
 
-
-
-  // test sockets of each element
-  
-
   // 
+  /* SABOTAGE HANDLING */
+  // 
+  function message(roomCode, username, message) {
+    opponentSocket(roomCode, username).emit('receiveMessage', message);
+  }
+  socket.on('sendMessage', (roomCode, username, message) => {
+    message(roomCode[0], username[0], message);
+  })
+
+  // activate code swap for opponent
+  socket.on('sendCodeSwap', (roomCode, username) => {
+    opponentSocket(roomCode[0], username[0]).emit('triggerCodeSwap', username[0]);
+    console.log(`Room ${roomCode}: ${username} edited opponent's code`);
+  });
+  
+  // player edits opponents code
+  socket.on('sendOpponentEdit', (roomCode, username, editType, index, length, text) => {
+    opponentSocket(roomCode[0], username[0]).emit("receiveOwnCodeEdit", editType, index, length, text);
+    console.log(`Room ${roomCode}: ${username} edited opponent's code`);
+  });
+
+  socket.on('sendDisableMouse', (roomCode, username) => {
+    opponentSocket(roomCode[0], username[0]).emit('triggerDisableMouse', username[0]);
+    console.log(`Room ${roomCode}: ${username} edited opponent's code`);
+  });
+
+  socket.on('sendReverseArrowKeys', (roomCode, username) => {
+    opponentSocket(roomCode[0], username[0]).emit('triggerReverseArrowKeys', username[0]);
+    console.log(`Room ${roomCode}: ${username} used disable arrow keys`);
+  });
+
+  socket.on('sendDisableShortcuts', (roomCode, username) => {
+    opponentSocket(roomCode[0], username[0]).emit('triggerDisableShortcuts', username[0]);
+    console.log(`Room ${roomCode}: ${username} used disable arrow keys`);
+  });
 });

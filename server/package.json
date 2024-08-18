@@ -10,6 +10,7 @@
     "nodemon": "^3.1.4"
   },
   "dependencies": {
+    "express": "^4.19.2",
     "socket.io": "^4.7.5",
     "vm": "^0.1.0"
   }
