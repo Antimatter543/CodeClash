@@ -11,12 +11,19 @@ const PlayerType = {
   opponent: "opponent",
 } as const;
 
+interface LanguageObject {
+    [key: string]: string;
+  }
+  
+type LanguageArray = [LanguageObject];
 interface IDEProps {
-  playerType: keyof typeof PlayerType;
-  socket: Socket | null;
-}
+    playerType: keyof typeof PlayerType;
+    socket: Socket | null;
+    language: LanguageArray;
+    selectedLanguage: "Python" | "Java";
+  }
 
-export default function IDE({ playerType, socket }: IDEProps) {
+export default function IDE({ playerType, socket, language, selectedLanguage }: IDEProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const roomCode = useState<string>(() => localStorage.getItem('roomCode') || '');
   const username = useState<string>(() => localStorage.getItem('username') || '');
@@ -125,15 +132,17 @@ export default function IDE({ playerType, socket }: IDEProps) {
   }, [sabotagePoints]);
 
   return (
-    <Editor
+    <div className='relative w-full'>
+      <Editor
         height="90vh"
-        defaultLanguage="javascript"
-        defaultValue="// some comment"
+        language={selectedLanguage.toLowerCase()}
+        value={language[0][selectedLanguage]}
         onMount={handleEditorDidMount}
         options={{
-            readOnly: false,
-            minimap: { enabled: false },
+          readOnly: false,
+          minimap: { enabled: false },
         }}
-    />
+      />
+    </div>
   );
 }

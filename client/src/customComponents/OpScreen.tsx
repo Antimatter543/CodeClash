@@ -6,11 +6,19 @@ import IDE from "./ide";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Socket } from 'socket.io-client';
 
+interface LanguageObject {
+    [key: string]: string;
+  }
+  
+type LanguageArray = [LanguageObject];
+
 interface OpScreenProps {
     socket: Socket | null;
+    language: LanguageArray;
+    selectedLanguage: "Python" | "Java";
 }
 
-export default function OpScreen({ socket }: OpScreenProps) {
+export default function OpScreen({ socket, language, selectedLanguage }: OpScreenProps) {
     const [open, setOpen] = useState(false);
     const shortcutPressed = useShortCut("k", "metaKey");
     const opponent = useState<string>(() => localStorage.getItem('opponent') || '');
@@ -46,7 +54,7 @@ export default function OpScreen({ socket }: OpScreenProps) {
                 }}
                 layout
             >
-                <IDE playerType="opponent" socket={socket} />
+                <IDE playerType="opponent" socket={socket} language={language} selectedLanguage={selectedLanguage}/>
                 {(!open && opponent) && (
                     <div className="absolute inset-0 bg-black/20 flex justify-center items-center z-10 backdrop-blur-sm">
                         <Avatar className="size-[3.5rem]">

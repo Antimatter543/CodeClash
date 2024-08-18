@@ -1,27 +1,5 @@
 [
     {
-        "title": "76. Minimum Window Substring",
-        "details": "Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string \"\". The testcases will be generated such that the answer is unique. A substring is a contiguous sequence of characters within the string.",
-        "examples": [
-            {
-                "input": "s = \"a\", t = \"aa\"",
-                "output": "\"\"",
-                "explanation": "Both 'a's from t must be included in the window."
-            }
-        ],
-        "constraints": [
-            "",
-            "m == s.length",
-            "n == t.length",
-            "1 <= m, n <= 105",
-            "s and t consist of uppercase and lowercase English letters.",
-            "",
-            "",
-            "Follow up: Could you find an algorithm that runs in O(m + n) time?"
-        ],
-        "timeLimit": 480
-    },
-    {
         "title": "119. Pascal's Triangle II",
         "details": "Given an integer rowIndex, return the rowIndexth (0-indexed) row of the Pascal's triangle. In Pascal's triangle, each number is the sum of the two numbers directly above it as shown:",
         "examples": [
@@ -31,13 +9,15 @@
             }
         ],
         "constraints": [
-            "",
-            "0 <= rowIndex <= 33",
-            "",
-            "",
-            "Follow up: Could you optimize your algorithm to use only O(rowIndex) extra space?"
+            "0 <= rowIndex <= 33"
         ], 
-        "timeLimit": 120
+        "timeLimit": 120,
+        "language": [
+            {
+                "Python": "from typing import List\n\nclass Solution:\n    def getRow(self, rowIndex: int) -> List[int]:",
+                "Java": "public static List<Integer> getRow(int rowIndex) {"
+            }
+        ]
     },
     {
         "title": "287. Find the Duplicate Number",
@@ -49,19 +29,18 @@
             }
         ],
         "constraints": [
-            "",
             "1 <= n <= 105",
             "nums.length == n + 1",
             "1 <= nums[i] <= n",
-            "All the integers in nums appear only once except for precisely one integer which appears two or more times.",
-            "",
-            "",
-            "Follow up:",
-            "",
-            "How can we prove that at least one duplicate number must exist in nums?",
-            "Can you solve the problem in linear runtime complexity?"
+            "All the integers in nums appear only once except for precisely one integer which appears two or more times."
         ], 
-        "timeLimit": 300
+        "timeLimit": 300,
+        "language": [
+            {
+                "Python": "from typing import List\n\nclass Solution:\n    def findDuplicate(self, nums: List[int]) -> int:",
+                "Java": "public static int findDuplicate(List<Integer> nums) {"
+            }
+        ]
     },
     {
         "title": "557. Reverse Words in a String III",
@@ -73,14 +52,19 @@
             }
         ],
         "constraints": [
-            "",
             "1 <= s.length <= 5 * 10^4",
             "s contains printable ASCII characters.",
             "s does not contain any leading or trailing spaces.",
             "There is at least one word in s.",
             "All the words in s are separated by a single space."
         ],
-        "timeLimit": 120
+        "timeLimit": 120,
+        "language": [
+            {
+                "Python": "class Solution:\n    def reverseWords(self, s):",
+                "Java": "public static String reverseWords(String s) {"
+            }
+        ]
     },
     {
         "title": "1048. Longest String Chain",
@@ -93,11 +77,16 @@
             }
         ],
         "constraints": [
-            "",
             "1 <= words.length <= 1000",
             "1 <= words[i].length <= 16",
             "words[i] only consists of lowercase English letters."
         ], 
-        "timeLimit": 300
+        "timeLimit": 300,
+        "language": [
+            {
+                "Python": "class Solution:\n    def longestStrChain(self, words):",
+                "Java": "public static int longestStrChain(String[] words) {"
+            }
+        ]
     }
 ]

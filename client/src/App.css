@@ -3,9 +3,9 @@
     display: flex;
     top: 11vh;   
     right: 3vw;     
-    width: 250px;
+    width: 200px;
     height: 150px;
-    background: #696969;
+    background: #ffa9a9;
     border-radius: 10px;
     z-index: 99;
     align-items: flex-start;

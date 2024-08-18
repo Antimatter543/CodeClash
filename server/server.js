@@ -27,7 +27,7 @@ server.listen(port, () => {
 const rooms = {};
 
 async function importProblems() {
-  const requestURL = 'https://raw.githubusercontent.com/Antimatter543/CodeClash/main/questions/questions.json';
+  const requestURL = 'https://raw.githubusercontent.com/Antimatter543/CodeClash/UI-rooms/questions/questions.json';
   const request = new Request(requestURL);
 
   const response = await fetch(request);
@@ -53,7 +53,7 @@ io.on('connect', socket => {
   console.log("New client:", socket.id);
 
   function opponentSocket(roomCode, username) {
-    console.log("opponentSocket()", roomCode, username);
+    //console.log("opponentSocket()", roomCode, username);
     const room = rooms[roomCode];
     // console.log(room)
     if (room.player1.name === username) {
@@ -77,7 +77,7 @@ io.on('connect', socket => {
         id: "",
       }, 
     };
-    console.log("Created room with code", roomCode);
+    //console.log("Created room with code", roomCode);
     listRoomMembers()
     socket.emit("confirmCreateRoom", true, roomCode, username);
   });
@@ -97,32 +97,32 @@ io.on('connect', socket => {
 
   socket.on('requestJoinRoom', (roomCode, username) => {
     roomCode = roomCode.toUpperCase();
-    console.log(`User ${username} is attempting to join room ${roomCode}`);
+    //console.log(`User ${username} is attempting to join room ${roomCode}`);
   
     if (rooms.hasOwnProperty(roomCode)) {
         let room = rooms[roomCode];
-        console.log(`Room ${roomCode} found. Current state:`, room);
+        //console.log(`Room ${roomCode} found. Current state:`, room);
   
         if (!room.player1.connected) { // join as player 1
             rooms[roomCode].player1.connected = true; 
             rooms[roomCode].player1.id = socket.id;
             rooms[roomCode].player1.name = username;
-            console.log(`${username} joined room ${roomCode} as player 1. Player 1 ID: ${socket.id}`);
+            //console.log(`${username} joined room ${roomCode} as player 1. Player 1 ID: ${socket.id}`);
         } else if (!room.player2.connected) { // join as player 2
             rooms[roomCode].player2.connected = true; 
             rooms[roomCode].player2.id = socket.id;
             rooms[roomCode].player2.name = username;
-            console.log(`${username} joined room ${roomCode} as player 2. Player 2 ID: ${socket.id}`);
+            //console.log(`${username} joined room ${roomCode} as player 2. Player 2 ID: ${socket.id}`);
         } else {
-            console.log(`Room ${roomCode} is full. User ${username} cannot join.`);
+            //console.log(`Room ${roomCode} is full. User ${username} cannot join.`);
             socket.emit('joinRoom', false, roomCode); // room is full
             return;
         }
       
         socket.join(roomCode);
         socket.emit('confirmJoin', true, roomCode, username); // Emit success message
-        console.log(`User ${username} successfully joined room ${roomCode}.`);
-        console.log(room);
+        //console.log(`User ${username} successfully joined room ${roomCode}.`);
+        //console.log(room);
   
         if (room.player1.connected && room.player2.connected) {
             io.to(room.player1.id).emit('playersJoinedRoom', true, room.player2.name);
@@ -131,7 +131,7 @@ io.on('connect', socket => {
             console.log(room);
         }
     } else {
-        console.log(`Room ${roomCode} does not exist. User ${username} cannot join.`);
+        //console.log(`Room ${roomCode} does not exist. User ${username} cannot join.`);
         socket.emit('joinRoom', false, roomCode); // no such room
     }
 });
@@ -198,7 +198,8 @@ io.on('connect', socket => {
 
   socket.on('requestProblem', (currentProblemNumber, roomCode) => { // send 0 as current problem number to start 
     const problem = problems[currentProblemNumber];
-    const room = rooms[roomCode[0]]
+    const room = rooms[roomCode]
+    console.log(room)
     if (currentProblemNumber === 0) {
       io.to(room.player1.id).emit('startGame', problem)
       io.to(room.player2.id).emit('startGame', problem)
