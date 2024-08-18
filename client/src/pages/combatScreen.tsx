@@ -37,6 +37,7 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
   const [problem, setProblem] = useState<Problem | null>(null);
   const [time, setTime] = useState(0);
   const [roomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
+  const [consoleData, setConsoleData] = useState(null);
 
   const handleStartFight = () => {
     if (combat) {
@@ -81,6 +82,8 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
     startTimer(time);
   }, [time, startTimer]);
 
+  const questionTitle = problem?.title;
+  const question = questionTitle?.split(' ')[0]?.replace(/\D/g, '');
   return (
     <div className='relative overflow-hidden'>
       {!fightStarted && (
@@ -105,7 +108,7 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
       {problem &&
         <div>
           <div className='fixed right-10 top-[10vh] z-[20]'>
-            <OpScreen socket={socket} language={problem.language} selectedLanguage={selectedLanguage}/>
+            <OpScreen socket={socket} language={problem.language} selectedLanguage={selectedLanguage} question={question}/>
           </div>
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={30} minSize={20}>
@@ -115,11 +118,17 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
             <ResizablePanel>
               <ResizablePanelGroup direction="vertical">
                 <ResizablePanel>
-                  <IDE playerType="self" socket={socket} language={problem.language} selectedLanguage={selectedLanguage}/>
+                  <IDE playerType="self" 
+                    socket={socket}
+                    language={problem.language} 
+                    selectedLanguage={selectedLanguage} 
+                    question={question}
+                    setConsoleData={setConsoleData}
+                  />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize={20} minSize={20} maxSize={50}>
-                  <Console />
+                  <Console data={consoleData}/>
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>

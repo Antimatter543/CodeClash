@@ -1,7 +1,7 @@
 import requests
 
 # Configuration
-API_URL = "http://3.26.186.241:5000/submit-code"
+API_URL = "http://54.253.188.5:5000/submit-code"
 USER_CODE_FILE = "../questions/solutions/Python/1207.py"
 
 # Read user code from file

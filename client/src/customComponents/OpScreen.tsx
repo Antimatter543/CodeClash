@@ -16,9 +16,10 @@ interface OpScreenProps {
     socket: Socket | null;
     language: LanguageArray;
     selectedLanguage: "Python" | "Java";
+    question: string | undefined
 }
 
-export default function OpScreen({ socket, language, selectedLanguage }: OpScreenProps) {
+export default function OpScreen({ socket, language, selectedLanguage, question }: OpScreenProps) {
     const [open, setOpen] = useState(false);
     const shortcutPressed = useShortCut("k", "metaKey");
     const opponent = useState<string>(() => localStorage.getItem('opponent') || '');
@@ -54,7 +55,7 @@ export default function OpScreen({ socket, language, selectedLanguage }: OpScree
                 }}
                 layout
             >
-                <IDE playerType="opponent" socket={socket} language={language} selectedLanguage={selectedLanguage}/>
+                <IDE playerType="opponent" socket={socket} language={language} selectedLanguage={selectedLanguage} question={question} setConsoleData={null}/>
                 {(!open && opponent) && (
                     <div className="absolute inset-0 bg-black/20 flex justify-center items-center z-10 backdrop-blur-sm">
                         <Avatar className="size-[3.5rem]">
