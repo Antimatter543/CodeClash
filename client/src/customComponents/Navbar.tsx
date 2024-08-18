@@ -16,7 +16,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ combat, time, onLanguageChange }: NavbarProps) {
-  const [, setLanguage] = useState<string>('python');
+  const [, setLanguage] = useState<string>('Python');
 
   const handleLanguageChange = (selectedLanguage: string) => {
     setLanguage(selectedLanguage);
@@ -38,8 +38,8 @@ export default function Navbar({ combat, time, onLanguageChange }: NavbarProps) 
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Languages</SelectLabel>
-                  <SelectItem value="python">Python</SelectItem>
-                  <SelectItem value="java">Java</SelectItem>
+                  <SelectItem value="Python">Python</SelectItem>
+                  <SelectItem value="Java">Java</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>

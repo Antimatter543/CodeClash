@@ -10,6 +10,12 @@ import {
 import Console from '@/customComponents/Console';
 import OpScreen from '@/customComponents/OpScreen';
 import { Button } from '@/components/ui/button';
+
+interface LanguageObject {
+  [key: string]: string;
+}
+
+type LanguageArray = [LanguageObject];
 interface CombatScreenProp {
   socket: Socket | null;
   combat: boolean;
@@ -23,7 +29,7 @@ interface Problem {
   examples: Array<{ input: string; output: string }>;
   constraints: string[];
   timeLimit: number;
-  language: { [key: string]: string };
+  language: LanguageArray;
 }
 
 export default function CombatScreen({ socket, combat, startTimer, selectedLanguage }: CombatScreenProp) {

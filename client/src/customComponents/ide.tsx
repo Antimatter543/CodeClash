@@ -9,12 +9,18 @@ const PlayerType = {
   self: "self",
   opponent: "opponent",
 } as const;
+
+interface LanguageObject {
+    [key: string]: string;
+  }
+  
+type LanguageArray = [LanguageObject];
 interface IDEProps {
-  playerType: keyof typeof PlayerType;
-  socket: Socket | null;
-  language: { [key: string]: string; };
-  selectedLanguage: "Python" | "Java";
-}
+    playerType: keyof typeof PlayerType;
+    socket: Socket | null;
+    language: LanguageArray;
+    selectedLanguage: "Python" | "Java";
+  }
 
 export default function IDE({ playerType, socket, language, selectedLanguage }: IDEProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -71,8 +77,6 @@ export default function IDE({ playerType, socket, language, selectedLanguage }: 
       };
     }
   };
-
-  console.log(language[selectedLanguage])
 
   return (
     <div className='relative'>
