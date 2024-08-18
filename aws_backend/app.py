@@ -18,6 +18,17 @@ def run_test_cases(language: str, question_number: str, user_code: str) -> list:
 
     for i, input_case in enumerate(input_data):
         result = submit_code_to_judge0(language, judge_code, input_case)
+        if result.get('stdout') == None:
+            case_result = {
+                "pass": False,
+                "program_output": result.get('stdout'),
+                "expected_output": expected_output[i]
+            }
+
+            results.append(case_result)
+            continue
+        
+        # If output not none
         actual_output = result.get('stdout', '').strip()
         passed = False
 
