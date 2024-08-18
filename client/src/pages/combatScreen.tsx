@@ -10,17 +10,11 @@ import {
 import Console from '@/customComponents/Console';
 import OpScreen from '@/customComponents/OpScreen';
 import { Button } from '@/components/ui/button';
-
-const LanguageType = {
-  python: "Python",
-  java: "Java",
-} as const;
-
 interface CombatScreenProp {
   socket: Socket | null;
   combat: boolean;
   startTimer: (time: number) => void;
-  selectedLanguage: keyof typeof LanguageType;
+  selectedLanguage: "Python" | "Java";
 }
 
 interface Problem {
@@ -46,6 +40,7 @@ export default function CombatScreen({ socket, combat, startTimer, selectedLangu
 
   useEffect(() => {
     const handleStartGame = (problem: Problem) => {
+      console.log(problem)
       setProblem(problem);
       setFightStarted(true);
       setTime(problem.timeLimit);

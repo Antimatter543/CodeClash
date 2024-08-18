@@ -9,19 +9,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-type Language = 'python' | 'java';
-
 interface NavbarProps {
   combat: boolean;
   time: string;
-  onLanguageChange: (selectedLanguage: Language) => void;
+  onLanguageChange: (selectedLanguage: string) => void;
 }
 
 export default function Navbar({ combat, time, onLanguageChange }: NavbarProps) {
-  const [, setLanguage] = useState<Language>('python');
+  const [, setLanguage] = useState<string>('python');
 
-  const handleLanguageChange = (selectedLanguage: Language) => {
+  const handleLanguageChange = (selectedLanguage: string) => {
     setLanguage(selectedLanguage);
     onLanguageChange(selectedLanguage);
   };

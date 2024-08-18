@@ -22,7 +22,7 @@ async function importProblems() {
   const response = await fetch(request);
   problems = await response.json();
 
-  console.log("Problems:", problems);
+  //console.log("Problems:", problems);
 }
 
 importProblems();
@@ -75,9 +75,9 @@ io.on('connect', socket => {
     console.log("Listing all room members:");
     for (const roomCode in rooms) {
       const room = rooms[roomCode];
-      //console.log(`Room Code: ${roomCode}`);
-      //console.log(`  Player 1: ${room.player1.name}, Connected: ${room.player1.connected}`);
-      //console.log(`  Player 2: ${room.player2.name}, Connected: ${room.player2.connected}`);
+      console.log(`Room Code: ${roomCode}`);
+      console.log(`  Player 1: ${room.player1.name}, Connected: ${room.player1.connected}`);
+      console.log(`  Player 2: ${room.player2.name}, Connected: ${room.player2.connected}`);
     }
   }
   
@@ -116,8 +116,8 @@ io.on('connect', socket => {
         if (room.player1.connected && room.player2.connected) {
             io.to(room.player1.id).emit('playersJoinedRoom', true, room.player2.name);
             io.to(room.player2.id).emit('playersJoinedRoom', true, room.player1.name);
-            //console.log(`Both players have joined room ${roomCode}.`);
-            //console.log(room);
+            console.log(`Both players have joined room ${roomCode}.`);
+            console.log(room);
         }
     } else {
         //console.log(`Room ${roomCode} does not exist. User ${username} cannot join.`);
@@ -184,7 +184,8 @@ io.on('connect', socket => {
 
   socket.on('requestProblem', (currentProblemNumber, roomCode) => { // send 0 as current problem number to start 
     const problem = problems[currentProblemNumber];
-    const room = rooms[roomCode[0]]
+    const room = rooms[roomCode]
+    console.log(room)
     if (currentProblemNumber === 0) {
       io.to(room.player1.id).emit('startGame', problem)
       io.to(room.player2.id).emit('startGame', problem)

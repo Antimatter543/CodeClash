@@ -6,15 +6,10 @@ import IDE from "./ide";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Socket } from 'socket.io-client';
 
-const LanguageType = {
-    python: "Python",
-    java: "Java",
-  } as const;
-
 interface OpScreenProps {
     socket: Socket | null;
     language: { [key: string]: string; };
-    selectedLanguage: keyof typeof LanguageType;
+    selectedLanguage: "Python" | "Java";
 }
 
 export default function OpScreen({ socket, language, selectedLanguage }: OpScreenProps) {

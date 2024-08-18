@@ -9,19 +9,14 @@ const PlayerType = {
   self: "self",
   opponent: "opponent",
 } as const;
-
-const LanguageType = {
-    python: "Python",
-    java: "Java",
-  } as const;
 interface IDEProps {
   playerType: keyof typeof PlayerType;
   socket: Socket | null;
   language: { [key: string]: string; };
-  selectedLanguage: keyof typeof LanguageType
+  selectedLanguage: "Python" | "Java";
 }
 
-export default function IDE({ playerType, socket, language, selectedLanguage}: IDEProps) {
+export default function IDE({ playerType, socket, language, selectedLanguage }: IDEProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [roomCode] = useState<string>(() => localStorage.getItem('roomCode') || '');
   const [username] = useState<string>(() => localStorage.getItem('username') || '');
@@ -81,7 +76,7 @@ export default function IDE({ playerType, socket, language, selectedLanguage}: I
     <div className='relative'>
       <Editor
         height="90vh"
-        language={selectedLanguage}
+        language={selectedLanguage.toLowerCase()}
         defaultValue={language[selectedLanguage]}
         onMount={handleEditorDidMount}
         options={{
