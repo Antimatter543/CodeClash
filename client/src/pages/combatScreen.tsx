@@ -22,13 +22,6 @@ export default function CombatScreen({ socket, combat, startTimer }: CombatScree
   const [problem, setProblem] = useState(null);
   const [time, setTime] = useState(0);
   const [problemNumber, setProblemNumber] = useState(0);
-  const [sabotagePoints, setSabotagePoints] = useState(0);
-  const [mouseDisabled, setMouseDisabled] = useState(false);
-  const [mouseCooldown, setMouseCooldown] = useState(0);
-  const [shortcutsDisabled, setShortcutsDisabled] = useState(false);
-  const [shortcutsCooldown, setShortcutsCooldown] = useState(0);
-  const [arrowKeysDisabled, setArrowKeysDisabled] = useState(false);
-  const [arrowKeysCooldown, setArrowKeysCooldown] = useState(0);
   
   const roomCode = useState<string>(() => localStorage.getItem('roomCode') || '');
   const handleStartFight = () => {
@@ -48,24 +41,6 @@ export default function CombatScreen({ socket, combat, startTimer }: CombatScree
       console.log(problem)
       setProblem(problem)
       setTime(problem.timeLimit);
-    });
-
-    socket?.on('triggerDisableMouse', (username: string) => {
-      setMouseDisabled(true);
-      setMouseCooldown(60);
-      console.log(username, "disabled your mouse!");
-    });
-
-    socket?.on('triggerDisableShortcuts', (username: string) => {
-      setShortcutsDisabled(true);
-      setShortcutsCooldown(60);
-      console.log(username, "disabled your CTRL Z,X,C,V!");
-    });
-
-    socket?.on('triggerDisableArrowKeys', (username: string) => {
-      setArrowKeysDisabled(true);
-      setArrowKeysCooldown(60);
-      console.log(username, "disabled your arrow keys!");
     });
 
     return () => {

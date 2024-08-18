@@ -236,8 +236,8 @@ io.on('connect', socket => {
     console.log(`Room ${roomCode}: ${username} edited opponent's code`);
   });
 
-  socket.on('sendDisableArrowKeys', (roomCode, username) => {
-    opponentSocket(roomCode[0], username[0]).emit('triggerDisableArrowKeys', username[0]);
+  socket.on('sendReverseArrowKeys', (roomCode, username) => {
+    opponentSocket(roomCode[0], username[0]).emit('triggerReverseArrowKeys', username[0]);
     console.log(`Room ${roomCode}: ${username} used disable arrow keys`);
   });
 
