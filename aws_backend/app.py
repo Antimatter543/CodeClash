@@ -21,7 +21,7 @@ def run_test_cases(language: str, question_number: str, user_code: str) -> list:
         passed = False
 
         if language == "Python":
-            passed == actual_output == expected_output[i]
+            passed = actual_output == expected_output[i]
         elif language == "Java":
             if expected_output[i] == "True":
                 if actual_output == "true":
@@ -29,6 +29,9 @@ def run_test_cases(language: str, question_number: str, user_code: str) -> list:
             elif expected_output[i] == "False":
                 if actual_output == "false":
                     passed = True
+            else:
+                passed = actual_output == expected_output[i]
+
             
         case_result = {
             "pass": passed,
