@@ -1,9 +1,19 @@
-WIP -- Anti is making this look better (5/9/24):
+![image](https://github.com/user-attachments/assets/9b8915a2-e62b-4a84-93b6-164e91613e6a)WIP -- Anti is making this look better (5/9/24):
 - Pretty up README, having it ordered and make sense (add some diagrams?)
 - Make a short video about actually going through the project and showcasing a game.
 - Writing a blogpost for it
 
 Will be done by: Who knows :D 
+## Intro
+Ever wanted to get better at competitive programming, but found leetcoding by yourself too boring?
+
+Play CodeDuel! Now, you can vs a friend with questions, and sabotage their code!
+
+![image](https://github.com/user-attachments/assets/1a33d2a2-5c4b-4b73-8296-4aae06d257ee)
+
+![image](https://github.com/user-attachments/assets/f9eb4b49-52da-4ecd-9ed7-85a78b3a06d7)
+
+
 
 ## AWS Backend Stuff
 - Run the docker for judge0 execution
