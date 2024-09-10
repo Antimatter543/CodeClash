@@ -5,15 +5,15 @@ from constants import *
 #### THIS SENDS REQUESTS TO APP.PY HOSTED ON THE EC2 INSTANCE, NOT THE ACTUAL JUDGE THING!!!
 
 
-LOCAL = True
+LOCAL = False
 if LOCAL:
     API_URL = "http://127.0.0.1:5000/submit-code"
 else:
     API_URL = f"http://{EC2_IP}:5000/submit-code"
 
 
-QUESTION_NUMBER = "119"
-USER_CODE_FILE = f"./questions/solutions/Java/{QUESTION_NUMBER}.java"
+QUESTION_NUMBER = "1048"
+USER_CODE_FILE = f"./questions/solutions/Python/{QUESTION_NUMBER}.py"
 
 # Read user code from file
 with open(USER_CODE_FILE, 'r') as file:
@@ -22,7 +22,7 @@ with open(USER_CODE_FILE, 'r') as file:
 print(user_code)
 # Prepare the data to be sent in the POST request
 data = {
-    "language": "Java",
+    "language": "Python",
     "question_number": f"{QUESTION_NUMBER}",
     "user_code": user_code
 }
