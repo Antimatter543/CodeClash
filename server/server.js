@@ -53,7 +53,7 @@ io.on('connect', socket => {
   console.log("New client:", socket.id);
 
   function opponentSocket(roomCode, username) {
-    //console.log("opponentSocket()", roomCode, username);
+    console.log("opponentSocket()", roomCode, username);
     const room = rooms[roomCode];
     // console.log(room)
     if (room.player1.name === username) {
@@ -167,7 +167,7 @@ io.on('connect', socket => {
 
   // player edits own code
   socket.on('sendOwnEdit', (roomCode, username, editType, index, length, text) => {
-    opponentSocket(roomCode[0], username[0]).emit("receiveOpponentCodeEdit", editType, index, length, text);
+    opponentSocket(roomCode, username).emit("receiveOpponentCodeEdit", editType, index, length, text);
     console.log(`Room ${roomCode}: ${username} edited own code`);
   });
 
@@ -226,7 +226,7 @@ io.on('connect', socket => {
   
   // player edits opponents code
   socket.on('sendOpponentEdit', (roomCode, username, editType, index, length, text) => {
-    opponentSocket(roomCode[0], username[0]).emit("receiveOwnCodeEdit", editType, index, length, text);
+    opponentSocket(roomCode, username).emit("receiveOwnCodeEdit", editType, index, length, text);
     console.log(`Room ${roomCode}: ${username} edited opponent's code`);
   });
 
